@@ -8,22 +8,22 @@ part of 'ffmpeg_progress.dart';
 
 _FFmpegProgress _$FFmpegProgressFromJson(Map<String, dynamic> json) =>
     _FFmpegProgress(
-      frame: (json['frame'] as num?)?.toInt(),
-      fps: (json['fps'] as num?)?.toDouble(),
-      totalSize: (json['totalSize'] as num?)?.toInt(),
-      outTime: json['outTime'] == null
-          ? null
-          : Duration(microseconds: (json['outTime'] as num).toInt()),
+      frame: const IntConverter().fromJson(json['frame']),
+      fps: const DoubleConverter().fromJson(json['fps']),
+      bitrate: json['bitrate'] as String?,
+      totalSize: const IntConverter().fromJson(json['totalSize']),
+      outTimeMs: const IntConverter().fromJson(json['outTimeMs']),
       speed: json['speed'] as String?,
-      status: json['status'] as String?,
+      progress: json['progress'] as String?,
     );
 
 Map<String, dynamic> _$FFmpegProgressToJson(_FFmpegProgress instance) =>
     <String, dynamic>{
-      'frame': instance.frame,
-      'fps': instance.fps,
-      'totalSize': instance.totalSize,
-      'outTime': instance.outTime?.inMicroseconds,
+      'frame': const IntConverter().toJson(instance.frame),
+      'fps': const DoubleConverter().toJson(instance.fps),
+      'bitrate': instance.bitrate,
+      'totalSize': const IntConverter().toJson(instance.totalSize),
+      'outTimeMs': const IntConverter().toJson(instance.outTimeMs),
       'speed': instance.speed,
-      'status': instance.status,
+      'progress': instance.progress,
     };
