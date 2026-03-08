@@ -3,7 +3,6 @@ import 'package:fflow/core/config/app_settings.dart';
 import 'package:fflow/core/extension/iterable_extension.dart';
 import 'package:fflow/core/theme/theme_extension.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:gap/gap.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
@@ -25,8 +24,11 @@ class SettingsPage extends ConsumerWidget {
           _Section(
             title: 'Appearance',
             items: [
-              _SectionItem.listTile(
-                icon: const Icon(Icons.contrast),
+              _SectionItem(
+                icon: const Icon(
+                  Icons.contrast,
+                  size: 18,
+                ),
                 title: const Text('Theme mode'),
                 subtitle: const Text('Adjust the interface appearance'),
                 trailing: Consumer(
@@ -100,83 +102,104 @@ class SettingsPage extends ConsumerWidget {
   }
 }
 
-class _SectionItem extends StatelessWidget {
-  const _SectionItem({required this.child, this.icon, this.onTap});
-  factory _SectionItem.listTile({
-    required Widget title,
-    Widget? subtitle,
-    Widget? icon,
-    Widget? trailing,
-    GestureTapCallback? onTap,
-  }) {
-    return _SectionItem(
-      icon: icon,
-      onTap: onTap,
-      child: Builder(
-        builder: (context) {
-          final titleTextStyle = context.textTheme.titleMedium?.copyWith(
-            fontWeight: FontWeight.w400,
-          );
-          final subtitleTextStyle = context.textTheme.titleSmall?.copyWith(
-            color: context.colorScheme.onSurfaceVariant,
-            fontWeight: FontWeight.w300,
-          );
+class _SectionItemContainer extends StatelessWidget {
+  const _SectionItemContainer({this.child});
 
-          var titleWidget = title;
-          if (titleTextStyle != null) {
-            titleWidget = DefaultTextStyle(
-              style: titleTextStyle,
-              child: titleWidget,
-            );
-          }
+  final Widget? child;
 
-          var subtitleWidget = subtitle;
-          if (subtitleWidget != null && subtitleTextStyle != null) {
-            subtitleWidget = DefaultTextStyle(
-              style: subtitleTextStyle,
-              child: subtitleWidget,
-            );
-          }
-
-          return Row(
-            children: [
-              Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Flexible(child: titleWidget),
-                  if (subtitleWidget != null) ...[
-                    const Gap(4),
-                    Flexible(child: subtitleWidget),
-                  ],
-                ],
-              ),
-
-              if (trailing != null) ...[
-                const Spacer(),
-                Flexible(flex: 0, child: trailing),
-              ],
-            ],
-          );
-        },
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: Colors.transparent,
+      borderRadius: _kSectionBorderRadius,
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(
+          minWidth: double.infinity,
+          minHeight: 48,
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: child,
+        ),
       ),
     );
   }
+}
 
-  final Widget child;
+class _SectionItem extends StatelessWidget {
+  const _SectionItem({
+    required this.title,
+    this.subtitle,
+    this.icon,
+    this.trailing,
+    this.onTap,
+  });
+
+  final Widget title;
+  final Widget? subtitle;
   final Widget? icon;
+  final Widget? trailing;
   final GestureTapCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
-    var child = this.child;
+    Widget widget;
+
+    final titleTextStyle = context.textTheme.titleMedium?.copyWith(
+      fontWeight: FontWeight.w400,
+    );
+    final subtitleTextStyle = context.textTheme.titleSmall?.copyWith(
+      color: context.colorScheme.onSurfaceVariant,
+      fontWeight: FontWeight.w300,
+    );
+
+    var title = this.title;
+    if (titleTextStyle != null) {
+      title = DefaultTextStyle(
+        style: titleTextStyle,
+        child: title,
+      );
+    }
+
+    var subtitle = this.subtitle;
+    if (subtitle != null && subtitleTextStyle != null) {
+      subtitle = DefaultTextStyle(
+        style: subtitleTextStyle,
+        child: subtitle,
+      );
+    }
+
+    final trailing = this.trailing;
+
+    widget = Row(
+      children: [
+        Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Flexible(child: title),
+            if (subtitle != null) ...[
+              const Gap(4),
+              Flexible(child: subtitle),
+            ],
+          ],
+        ),
+
+        if (trailing != null) ...[
+          const Spacer(),
+          Flexible(flex: 0, child: trailing),
+        ],
+      ],
+    );
+
     if (icon != null) {
-      child = Row(
+      widget = Row(
         mainAxisSize: MainAxisSize.min,
         children: [
           DecoratedBox(
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: context.colorScheme.primary,
+              color: context.colorScheme.surfaceContainerHighest,
             ),
             child: Padding(
               padding: const EdgeInsets.all(10),
@@ -184,29 +207,20 @@ class _SectionItem extends StatelessWidget {
             ),
           ),
           const Gap(16),
-          Expanded(child: child),
+          Expanded(child: widget),
         ],
       );
     }
 
-    return Material(
-      color: Colors.transparent,
-      borderRadius: _kSectionBorderRadius,
-      child: InkWell(
-        onTap: onTap,
+    if (onTap != null) {
+      widget = InkWell(
         borderRadius: _kSectionBorderRadius,
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(
-            minWidth: double.infinity,
-            minHeight: 48,
-          ),
-          child: Padding(
-            padding: const EdgeInsets.all(16),
-            child: child,
-          ),
-        ),
-      ),
-    );
+        onTap: onTap,
+        child: widget,
+      );
+    }
+
+    return _SectionItemContainer(child: widget);
   }
 }
 
@@ -255,32 +269,13 @@ class _SectionItemsContainer extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          ...items
-              .map<Widget>((e) => _SectionItemBuilder(item: e))
-              .joinWith(
-                const Divider(
-                  height: 0,
-                  thickness: 1,
-                ),
-              ),
+          ...items.cast<Widget>().joinWith(
+            const Divider(
+              height: 0,
+              thickness: 1,
+            ),
+          ),
         ],
-      ),
-    );
-  }
-}
-
-class _SectionItemBuilder extends StatelessWidget {
-  const _SectionItemBuilder({required this.item});
-
-  final _SectionItem item;
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      width: double.infinity,
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: item.child,
       ),
     );
   }
