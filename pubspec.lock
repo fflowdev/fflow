@@ -197,10 +197,10 @@ packages:
     dependency: "direct main"
     description:
       name: dropdown_button2
-      sha256: b0fe8d49a030315e9eef6c7ac84ca964250155a6224d491c1365061bc974a9e1
+      sha256: fbb9ea9ea81b04e48d27bb181852b7e11e684aa2a32e95aec4c131be1849e33a
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "2.3.9"
+    version: "3.0.0"
   dynamic_color:
     dependency: "direct main"
     description:
@@ -246,10 +246,10 @@ packages:
     dependency: "direct main"
     description:
       name: file_picker
-      sha256: "57d9a1dd5063f85fa3107fb42d1faffda52fdc948cefd5fe5ea85267a5fc7343"
+      sha256: "27c58ff4ec17d8e05b8b27fa66175bf5786b9ff9bd94ca418a571c7f6771b27b"
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "10.3.10"
+    version: "11.0.0"
   fixnum:
     dependency: transitive
     description:

@@ -74,21 +74,21 @@ class MyHomePage extends HookConsumerWidget {
     }, [runner.value]);
 
     Future<void> selectFFmpeg() async {
-      final result = await FilePicker.platform.pickFiles();
+      final result = await FilePicker.pickFiles();
       if (result != null && result.files.single.path != null) {
         ffmpegPath.value = result.files.single.path;
       }
     }
 
     Future<void> selectInputFile() async {
-      final result = await FilePicker.platform.pickFiles();
+      final result = await FilePicker.pickFiles();
       if (result != null && result.files.single.path != null) {
         inputFile.value = File(result.files.single.path!);
       }
     }
 
     Future<void> selectOutputPath() async {
-      final result = await FilePicker.platform.getDirectoryPath();
+      final result = await FilePicker.getDirectoryPath();
       if (result != null) {
         outputPath.value = result;
       }
