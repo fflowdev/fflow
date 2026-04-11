@@ -1,4 +1,5 @@
 import 'package:fflow/core/router/router.dart';
+import 'package:fflow/core/theme/extentions/navigation_theme.dart';
 import 'package:fflow/core/theme/theme_extension.dart';
 import 'package:fflow/features/home/domain/home_page_navigation_destination.dart';
 import 'package:flutter/material.dart';
@@ -24,6 +25,12 @@ class HomeShell extends StatelessWidget {
         Icons.tune_outlined,
         Icons.tune,
         PresetsRoute(),
+      ),
+      HomePageNavigationDestination.item(
+        'Debug',
+        Icons.bug_report_outlined,
+        Icons.bug_report,
+        DebugRoute(),
       ),
       HomePageNavigationDestination.divider(),
       HomePageNavigationDestination.item(
@@ -54,10 +61,10 @@ class _Navigation extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = context.theme;
+    final navTheme = context.navigationTheme;
 
     return Material(
-      color: theme.colorScheme.surfaceContainer,
+      color: navTheme.backgroundColor,
       child: SizedBox(
         width: 287,
         child: Column(
@@ -140,10 +147,11 @@ class _NavigationDestination extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final borderRadius = BorderRadius.circular(9999);
+    final navTheme = context.navigationTheme;
     return Material(
       color: selected
-          ? context.colorScheme.secondaryContainer
-          : Colors.transparent,
+          ? navTheme.selectedItemColor
+          : navTheme.unselectedItemColor,
       borderRadius: borderRadius,
       child: InkWell(
         onTap: onTap,
@@ -159,17 +167,15 @@ class _NavigationDestination extends StatelessWidget {
                   icon,
                   size: 20,
                   color: selected
-                      ? context.colorScheme.onSurface
-                      : context.colorScheme.onSurfaceVariant,
+                      ? navTheme.selectedItemIconColor
+                      : navTheme.unselectedItemIconColor,
                 ),
                 const Gap(16),
                 Text(
                   label,
-                  style: context.textTheme.bodyMedium?.copyWith(
-                    color: selected
-                        ? context.colorScheme.onSurface
-                        : context.colorScheme.onSurfaceVariant,
-                  ),
+                  style: selected
+                      ? navTheme.selectedItemLabelStyle
+                      : navTheme.unselectedItemLabelStyle,
                 ),
               ],
             ),

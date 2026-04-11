@@ -1,4 +1,5 @@
 import 'package:fflow/features/home/dashboard/dashboard_page.dart';
+import 'package:fflow/features/home/debug/debug_page.dart';
 import 'package:fflow/features/home/home_shell.dart';
 import 'package:fflow/features/home/presets/presets_page.dart';
 import 'package:fflow/features/home/settings/settings_page.dart';
@@ -20,6 +21,7 @@ final homeShellNavigatorKey = GlobalKey<NavigatorState>();
   routes: [
     TypedGoRoute<DashboardRoute>(path: '/dashboard'),
     TypedGoRoute<PresetsRoute>(path: '/presets'),
+    TypedGoRoute<DebugRoute>(path: '/debug'),
     TypedGoRoute<SettingsRoute>(path: '/settings'),
   ],
 )
@@ -49,6 +51,15 @@ class PresetsRoute extends GoRouteData with $PresetsRoute {
   @override
   Widget build(BuildContext context, GoRouterState state) {
     return const PresetsPage();
+  }
+}
+
+class DebugRoute extends GoRouteData with $DebugRoute {
+  const DebugRoute();
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) {
+    return const DebugPage();
   }
 }
 

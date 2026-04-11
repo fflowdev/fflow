@@ -22,6 +22,8 @@ abstract class _Storage {
     __prefs = await SharedPreferences.getInstance();
   }
 
+  Future<bool> clear() => _prefs.clear();
+
   T? _getDecodeJson<T>(String key, T Function(Json) fromJson) {
     final jsonString = _prefs.getString(key);
     if (jsonString == null) return null;

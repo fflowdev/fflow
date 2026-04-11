@@ -1,6 +1,6 @@
 import 'package:fflow/core/config/app_settings.dart';
 import 'package:fflow/core/extension/iterable_extension.dart';
-import 'package:fflow/core/theme/theme_extension.dart';
+import 'package:fflow/core/theme/extentions/settings_page_theme.dart';
 import 'package:fflow/features/home/presentation/home_shell_scaffold.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
@@ -19,6 +19,44 @@ class SettingsPage extends HookConsumerWidget {
           _ListTileGroup(
             name: 'Appearance',
             listTiles: [
+              _ListTile(
+                icon: Icons.dark_mode_outlined,
+                title: 'Dark Mode',
+                subtitle: 'Adjust the interface preference',
+                trailing: Consumer(
+                  builder: (context, ref, child) {
+                    final currentThemeMode = ref.watch(
+                      appSettingsProvider.select(
+                        (state) => state.themeSettings.themeMode,
+                      ),
+                    );
+                    return SegmentedButton(
+                      showSelectedIcon: false,
+                      segments: ThemeMode.values
+                          .map(
+                            (e) => ButtonSegment(
+                              value: e,
+                              label: switch (e) {
+                                ThemeMode.system => const Text('System'),
+                                ThemeMode.light => const Text('Light'),
+                                ThemeMode.dark => const Text('Dark'),
+                              },
+                            ),
+                          )
+                          .toList(),
+                      onSelectionChanged: (newSelection) {
+                        if (newSelection.isEmpty) return;
+                        ref
+                            .read(appSettingsProvider.notifier)
+                            .updateThemeMode(newSelection.first);
+                      },
+                      selected: {
+                        currentThemeMode,
+                      },
+                    );
+                  },
+                ),
+              ),
               _ListTile(
                 icon: Icons.dark_mode_outlined,
                 title: 'Dark Mode',
@@ -92,8 +130,9 @@ class _ListTileBuilder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final tileStyle = context.settingsPageTheme.tileTheme;
     return Material(
-      color: context.colorScheme.surfaceContainer,
+      color: tileStyle.backgroundColor,
       borderRadius: borderRadius,
       child: InkWell(
         onTap: listTile.onTap,
@@ -104,12 +143,16 @@ class _ListTileBuilder extends StatelessWidget {
             children: [
               DecoratedBox(
                 decoration: BoxDecoration(
-                  color: context.colorScheme.surfaceContainerHighest,
+                  color: tileStyle.iconBackgroundColor,
                   shape: BoxShape.circle,
                 ),
                 child: Padding(
-                  padding: const EdgeInsets.all(10),
-                  child: Icon(listTile.icon, size: 20),
+                  padding: const EdgeInsets.all(8),
+                  child: Icon(
+                    listTile.icon,
+                    size: 20,
+                    color: tileStyle.iconColor,
+                  ),
                 ),
               ),
               const Gap(16),
@@ -119,16 +162,12 @@ class _ListTileBuilder extends StatelessWidget {
                 children: [
                   Text(
                     listTile.title,
-                    style: context.textTheme.bodyLarge?.copyWith(
-                      color: context.colorScheme.onSurface,
-                    ),
+                    style: tileStyle.titleTextStyle,
                   ),
                   if (listTile.subtitle != null)
                     Text(
                       listTile.subtitle!,
-                      style: context.textTheme.bodyMedium?.copyWith(
-                        color: context.colorScheme.onSurfaceVariant,
-                      ),
+                      style: tileStyle.subtitleTextStyle,
                     ),
                 ],
               ),
@@ -150,12 +189,14 @@ class _ListTileGroup extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final pageTheme = context.settingsPageTheme;
+    final tileStyle = pageTheme.tileTheme;
     final divider = Divider(
       height: 1,
       thickness: 1,
-      color: context.colorScheme.onSurfaceVariant.withValues(alpha: 0.5),
+      color: tileStyle.dividerColor,
     );
-    const radius = Radius.circular(12);
+    final radius = tileStyle.borderRadius;
 
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -164,12 +205,7 @@ class _ListTileGroup extends StatelessWidget {
         if (name != null)
           Padding(
             padding: const EdgeInsets.only(bottom: 16),
-            child: Text(
-              name!,
-              style: context.textTheme.bodyMedium?.copyWith(
-                color: context.colorScheme.onSurfaceVariant,
-              ),
-            ),
+            child: Text(name!, style: pageTheme.tileGroupTitleTextStyle),
           ),
 
         Flexible(
@@ -195,7 +231,7 @@ class _ListTileGroup extends StatelessWidget {
                       .map(
                         (tile) => _ListTileBuilder(
                           listTile: tile,
-                          borderRadius: const BorderRadius.all(radius),
+                          borderRadius: BorderRadius.all(radius),
                         ),
                       )
                       .toList(),

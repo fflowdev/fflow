@@ -19,7 +19,6 @@ class _JoinedIterator<E> implements Iterator<E> {
   final E _separator;
 
   bool _isFirst = true;
-  bool _hasNext = false;
   bool _useSeparator = false;
 
   @override
@@ -27,23 +26,29 @@ class _JoinedIterator<E> implements Iterator<E> {
 
   @override
   bool moveNext() {
+    // 1. 如果是第一个元素，直接取底层迭代器的第一个元素
     if (_isFirst) {
       _isFirst = false;
       return _iterable.moveNext();
     }
 
+    // 2. 如果上一次是分隔符，那么这一次应该取底层迭代器真正的值
+    // （底层迭代器已经在上一步提前 moveNext 过了）
     if (_useSeparator) {
       _useSeparator = false;
       return true;
     }
 
+    // 3. 尝试步进底层迭代器
     final hasNext = _iterable.moveNext();
+
+    // 如果底层还有下一个元素，说明我们在输出它之前需要先输出一个分隔符
     if (hasNext) {
       _useSeparator = true;
-      _hasNext = true;
       return true;
     }
 
-    return _hasNext;
+    // 4. 底层没有任何元素了，直接结束
+    return false;
   }
 }

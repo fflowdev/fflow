@@ -1,3 +1,4 @@
+import 'package:fflow/core/theme/app_theme.dart';
 import 'package:fflow/core/theme/theme_extension.dart';
 import 'package:flutter/material.dart';
 
@@ -9,8 +10,8 @@ class HomeShellScaffold extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ColoredBox(
-      color: context.colorScheme.surface,
+    return Material(
+      color: context.appThemeData.surface,
       child: SizedBox.expand(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
