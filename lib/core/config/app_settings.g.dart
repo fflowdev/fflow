@@ -9,6 +9,7 @@ part of 'app_settings.dart';
 _AppSettings _$AppSettingsFromJson(Map<String, dynamic> json) => _AppSettings(
   ffmpegPath: json['ffmpegPath'] as String?,
   ffprobePath: json['ffprobePath'] as String?,
+  outputDiretoryPath: json['outputDiretoryPath'] as String?,
   themeSettings: ThemeSettings.fromJson(
     json['themeSettings'] as Map<String, dynamic>,
   ),
@@ -18,6 +19,7 @@ Map<String, dynamic> _$AppSettingsToJson(_AppSettings instance) =>
     <String, dynamic>{
       'ffmpegPath': instance.ffmpegPath,
       'ffprobePath': instance.ffprobePath,
+      'outputDiretoryPath': instance.outputDiretoryPath,
       'themeSettings': instance.themeSettings,
     };
 
@@ -83,7 +85,7 @@ final class AppSettingsNotifierProvider
 }
 
 String _$appSettingsNotifierHash() =>
-    r'bdf9bd622d82962c09be44ee52cc6e6f5968e2fa';
+    r'c4e009d43bec43a355e6ebdf354709b1d1c4e0f5';
 
 abstract class _$AppSettingsNotifier extends $Notifier<AppSettings> {
   AppSettings build();

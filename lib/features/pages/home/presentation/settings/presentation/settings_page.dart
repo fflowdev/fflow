@@ -21,8 +21,12 @@ class SettingsPage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final appSettings = ref.read(appSettingsProvider);
     final ffmpegPathTextEditingController = useTextEditingController(
-      text: ref.read(appSettingsProvider).ffmpegPath,
+      text: appSettings.ffmpegPath,
+    );
+    final outputDiretoryPathTextEditingController = useTextEditingController(
+      text: appSettings.outputDiretoryPath,
     );
     useEffect(() {
       void listener() {
@@ -34,6 +38,19 @@ class SettingsPage extends HookConsumerWidget {
       ffmpegPathTextEditingController.addListener(listener);
       return () => ffmpegPathTextEditingController.removeListener(listener);
     }, [ffmpegPathTextEditingController]);
+    useEffect(() {
+      void listener() {
+        ref
+            .read(appSettingsProvider.notifier)
+            .updateOutputDirectoryPath(
+              outputDiretoryPathTextEditingController.text,
+            );
+      }
+
+      outputDiretoryPathTextEditingController.addListener(listener);
+      return () =>
+          outputDiretoryPathTextEditingController.removeListener(listener);
+    }, [outputDiretoryPathTextEditingController]);
     Future<void> onTapPickFFmpegExecutable() async {
       final result = await FilePicker.pickFiles(
         allowedExtensions: Platform.isWindows ? ['exe'] : null,
@@ -94,6 +111,16 @@ class SettingsPage extends HookConsumerWidget {
         },
         loading: () {},
       );
+    }
+
+    Future<void> onTapPickOutputDirectory() async {
+      final directoryPath = await FilePicker.getDirectoryPath();
+      if (directoryPath == null) {
+        logger.i('Output directory picking was cancelled');
+        return;
+      }
+      logger.i('Picked output directory path: $directoryPath');
+      outputDiretoryPathTextEditingController.text = directoryPath;
     }
 
     return HomeShellScaffold(
@@ -180,6 +207,23 @@ class SettingsPage extends HookConsumerWidget {
                       },
                     ),
                   ],
+                ),
+              ),
+            ],
+          ),
+          _ListTileGroup(
+            name: 'Output Preferences',
+            listTiles: [
+              _ListTile.custom(
+                child: TextField(
+                  controller: outputDiretoryPathTextEditingController,
+                  decoration: InputDecoration(
+                    labelText: 'Default Output Directory',
+                    suffixIcon: IconButton(
+                      icon: const Icon(Icons.folder_open),
+                      onPressed: onTapPickOutputDirectory,
+                    ),
+                  ),
                 ),
               ),
             ],

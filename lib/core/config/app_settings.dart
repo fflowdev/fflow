@@ -15,12 +15,14 @@ abstract class AppSettings with _$AppSettings {
   const factory AppSettings({
     required String? ffmpegPath,
     required String? ffprobePath,
+    required String? outputDiretoryPath,
     required ThemeSettings themeSettings,
   }) = _AppSettings;
 
   factory AppSettings.def() => AppSettings(
     ffmpegPath: null,
     ffprobePath: null,
+    outputDiretoryPath: null,
     themeSettings: ThemeSettings.def(),
   );
 
@@ -78,6 +80,10 @@ class AppSettingsNotifier extends _$AppSettingsNotifier {
 
   void updateFFprobePath(String? path) {
     state = state.copyWith(ffprobePath: path);
+  }
+
+  void updateOutputDirectoryPath(String? path) {
+    state = state.copyWith(outputDiretoryPath: path);
   }
 
   void toggleUsePlatformSeedColor() {
