@@ -1,6 +1,7 @@
 import 'package:fflow/core/json/color_converter.dart';
 import 'package:fflow/core/json/json_typedef.dart';
 import 'package:fflow/core/storage/storage.dart';
+import 'package:fflow/core/utils/logger.dart';
 import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -51,7 +52,10 @@ class AppSettingsNotifier extends _$AppSettingsNotifier {
   @override
   AppSettings build() {
     listenSelf((previous, next) async {
-      if (next != previous) {
+      if (previous != null && next != previous) {
+        logger
+          ..i('App settings changed, saving to storage')
+          ..d('New app settings: $next');
         await storage.saveAppSettings(next);
       }
     });
