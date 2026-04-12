@@ -1,5 +1,5 @@
 import 'package:fflow/core/storage/storage.dart';
-import 'package:fflow/features/home/presentation/home_shell_scaffold.dart';
+import 'package:fflow/features/pages/home/presentation/home_shell_scaffold.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 

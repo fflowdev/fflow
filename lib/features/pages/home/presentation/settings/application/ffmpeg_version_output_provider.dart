@@ -1,4 +1,4 @@
-import 'package:fflow/features/home/presentation/settings/data/check_ffmpeg_version.dart';
+import 'package:fflow/features/pages/home/presentation/settings/data/check_ffmpeg_version.dart';
 import 'package:flutter/foundation.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';

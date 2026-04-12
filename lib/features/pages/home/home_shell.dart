@@ -1,7 +1,7 @@
 import 'package:fflow/core/router/router.dart';
 import 'package:fflow/core/theme/extentions/navigation_theme.dart';
 import 'package:fflow/core/theme/theme_extension.dart';
-import 'package:fflow/features/home/domain/home_page_navigation_destination.dart';
+import 'package:fflow/features/pages/home/domain/home_page_navigation_destination.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';

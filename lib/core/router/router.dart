@@ -1,8 +1,8 @@
-import 'package:fflow/features/home/home_shell.dart';
-import 'package:fflow/features/home/presentation/dashboard/dashboard_page.dart';
-import 'package:fflow/features/home/presentation/debug/debug_page.dart';
-import 'package:fflow/features/home/presentation/presets/presets_page.dart';
-import 'package:fflow/features/home/presentation/settings/presentation/settings_page.dart';
+import 'package:fflow/features/pages/home/home_shell.dart';
+import 'package:fflow/features/pages/home/presentation/dashboard/dashboard_page.dart';
+import 'package:fflow/features/pages/home/presentation/debug/debug_page.dart';
+import 'package:fflow/features/pages/home/presentation/presets/presets_page.dart';
+import 'package:fflow/features/pages/home/presentation/settings/presentation/settings_page.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
