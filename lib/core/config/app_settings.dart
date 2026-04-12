@@ -1,3 +1,4 @@
+import 'package:debounce_throttle/debounce_throttle.dart';
 import 'package:fflow/core/json/color_converter.dart';
 import 'package:fflow/core/json/json_typedef.dart';
 import 'package:fflow/core/storage/storage.dart';
@@ -51,12 +52,21 @@ abstract class ThemeSettings with _$ThemeSettings {
 class AppSettingsNotifier extends _$AppSettingsNotifier {
   @override
   AppSettings build() {
+    final saveDebouncer = Debouncer<AppSettings?>(
+      const Duration(milliseconds: 500),
+      initialValue: null,
+      onChanged: (value) async {
+        if (value != null) {
+          logger.d('Saving app settings: $value');
+          await storage.saveAppSettings(value);
+        }
+      },
+    );
+    ref.onDispose(saveDebouncer.cancel);
     listenSelf((previous, next) async {
       if (previous != null && next != previous) {
-        logger
-          ..i('App settings changed, saving to storage')
-          ..d('New app settings: $next');
-        await storage.saveAppSettings(next);
+        logger.d('App settings changed: $next');
+        saveDebouncer.value = next;
       }
     });
     return storage.getAppSettings() ?? AppSettings.def();
