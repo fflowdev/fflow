@@ -19,6 +19,11 @@ class AppTheme {
     final brightness = colorScheme.brightness;
     final primaryColor = colorScheme.primary;
     final theme = ThemeData.from(colorScheme: colorScheme).copyWith(
+      inputDecorationTheme: const InputDecorationThemeData(
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.all(Radius.circular(8)),
+        ),
+      ),
       extensions: [
         AppThemeData(
           surface: Color.lerp(
