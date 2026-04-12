@@ -28,6 +28,7 @@ environment:
 # the latest version available on pub.dev. To see which dependencies have newer
 # versions available, run `flutter pub outdated`.
 dependencies:
+  debounce_throttle: ^2.0.0
   dropdown_button2: ^3.0.0
   dynamic_color: ^1.8.1
   ffmpeg_cli:
