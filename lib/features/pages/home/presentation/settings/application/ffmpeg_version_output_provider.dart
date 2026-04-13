@@ -1,3 +1,4 @@
+import 'package:fflow/core/utils/logger.dart';
 import 'package:fflow/features/pages/home/presentation/settings/data/check_ffmpeg_version.dart';
 import 'package:flutter/foundation.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
@@ -27,6 +28,7 @@ class FfmpegVersionOutputNotifier extends _$FfmpegVersionOutputNotifier {
   Future<AsyncValue<FfmpegVersionOutputResult?>> run(String ffmpegPath) async {
     state = const AsyncValue.loading();
     return state = await AsyncValue.guard(() async {
+      logger.d('Running FFmpeg version check for path: $ffmpegPath');
       final result = await runCheckFFmpegVersion(ffmpegPath);
       return FfmpegVersionOutputResult(
         output: result.stdout as String,
