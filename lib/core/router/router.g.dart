@@ -12,7 +12,7 @@ RouteBase get $homeShellRoute => ShellRouteData.$route(
   navigatorKey: HomeShellRoute.$navigatorKey,
   factory: $HomeShellRouteExtension._fromState,
   routes: [
-    GoRouteData.$route(path: '/dashboard', factory: $DashboardRoute._fromState),
+    GoRouteData.$route(path: '/queue', factory: $QueueRoute._fromState),
     GoRouteData.$route(path: '/presets', factory: $PresetsRoute._fromState),
     GoRouteData.$route(path: '/debug', factory: $DebugRoute._fromState),
     GoRouteData.$route(path: '/settings', factory: $SettingsRoute._fromState),
@@ -24,12 +24,11 @@ extension $HomeShellRouteExtension on HomeShellRoute {
       const HomeShellRoute();
 }
 
-mixin $DashboardRoute on GoRouteData {
-  static DashboardRoute _fromState(GoRouterState state) =>
-      const DashboardRoute();
+mixin $QueueRoute on GoRouteData {
+  static QueueRoute _fromState(GoRouterState state) => const QueueRoute();
 
   @override
-  String get location => GoRouteData.$location('/dashboard');
+  String get location => GoRouteData.$location('/queue');
 
   @override
   void go(BuildContext context) => context.go(location);

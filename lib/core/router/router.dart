@@ -1,8 +1,8 @@
-import 'package:fflow/features/pages/home/home_shell.dart';
-import 'package:fflow/features/pages/home/presentation/dashboard/dashboard_page.dart';
-import 'package:fflow/features/pages/home/presentation/debug/debug_page.dart';
-import 'package:fflow/features/pages/home/presentation/presets/presets_page.dart';
-import 'package:fflow/features/pages/home/presentation/settings/presentation/settings_page.dart';
+import 'package:fflow/features/debug/presentation/debug_page.dart';
+import 'package:fflow/features/home_shell/presentation/home_shell.dart';
+import 'package:fflow/features/presets/presentation/presets_page.dart';
+import 'package:fflow/features/queue/presentation/queue_page.dart';
+import 'package:fflow/features/settings/presentation/settings_page.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -10,7 +10,7 @@ part 'router.g.dart';
 
 final router = GoRouter(
   routes: $appRoutes,
-  initialLocation: '/dashboard',
+  initialLocation: '/queue',
   navigatorKey: rootNavigatorKey,
 );
 
@@ -19,7 +19,7 @@ final homeShellNavigatorKey = GlobalKey<NavigatorState>();
 
 @TypedShellRoute<HomeShellRoute>(
   routes: [
-    TypedGoRoute<DashboardRoute>(path: '/dashboard'),
+    TypedGoRoute<QueueRoute>(path: '/queue'),
     TypedGoRoute<PresetsRoute>(path: '/presets'),
     TypedGoRoute<DebugRoute>(path: '/debug'),
     TypedGoRoute<SettingsRoute>(path: '/settings'),
@@ -36,12 +36,12 @@ class HomeShellRoute extends ShellRouteData {
   }
 }
 
-class DashboardRoute extends GoRouteData with $DashboardRoute {
-  const DashboardRoute();
+class QueueRoute extends GoRouteData with $QueueRoute {
+  const QueueRoute();
 
   @override
   Widget build(BuildContext context, GoRouterState state) {
-    return const DashboardPage();
+    return const QueuePage();
   }
 }
 
