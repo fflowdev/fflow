@@ -19,67 +19,39 @@ class PresetsPage extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return HomeShellScaffold(
       title: 'Preset Library',
+      titleBarActions: [
+        OutlinedButton.icon(
+          onPressed: () {
+            // TODO: Implement import
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text('Import feature coming soon'),
+              ),
+            );
+          },
+          icon: const Icon(Icons.file_download_outlined),
+          label: const Text('Import'),
+        ),
+        const Gap(12),
+        FilledButton.icon(
+          onPressed: () async {
+            await showDialog<void>(
+              context: context,
+              builder: (context) => const PresetDialog(),
+            );
+          },
+          icon: const Icon(Icons.add),
+          label: const Text('New Preset'),
+        ),
+        const Gap(24),
+      ],
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Header Section
-          Padding(
-            padding: const EdgeInsets.all(24),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'Saved Presets',
-                            style: context.textTheme.headlineMedium,
-                          ),
-                          const Gap(8),
-                          Text(
-                            'Manage your FFmpeg command configurations. Create, edit, and organize your encoding workflows.',
-                            style: context.textTheme.bodyMedium?.copyWith(
-                              color: context.colorScheme.onSurface.withValues(
-                                alpha: 0.6,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    const Gap(24),
-                    OutlinedButton.icon(
-                      onPressed: () {
-                        // TODO: Implement import
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text('Import feature coming soon'),
-                          ),
-                        );
-                      },
-                      icon: const Icon(Icons.file_download_outlined),
-                      label: const Text('Import'),
-                    ),
-                    const Gap(12),
-                    FilledButton.icon(
-                      onPressed: () async {
-                        await showDialog<void>(
-                          context: context,
-                          builder: (context) => const PresetDialog(),
-                        );
-                      },
-                      icon: const Icon(Icons.add),
-                      label: const Text('New Preset'),
-                    ),
-                  ],
-                ),
-                const Gap(24),
-                const _SearchAndViewToggle(),
-              ],
-            ),
+          const Padding(
+            padding: EdgeInsets.all(24),
+            child: _SearchAndViewToggle(),
           ),
           // Filter Chips
           const _FliterChips(),
@@ -203,11 +175,8 @@ class _GridView extends ConsumerWidget {
         crossAxisSpacing: 16,
         mainAxisSpacing: 16,
       ),
-      itemCount: presets.length + 1,
+      itemCount: presets.length,
       itemBuilder: (context, index) {
-        if (index == presets.length) {
-          return _CreateNewPresetCard();
-        }
         return PresetCard(preset: presets[index]);
       },
     );
@@ -223,68 +192,11 @@ class _ListView extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return ListView.separated(
       padding: const EdgeInsets.all(24),
-      itemCount: presets.length + 1,
+      itemCount: presets.length,
       separatorBuilder: (context, index) => const Gap(12),
       itemBuilder: (context, index) {
-        if (index == presets.length) {
-          return _CreateNewPresetCard();
-        }
         return PresetCard(preset: presets[index], isListView: true);
       },
-    );
-  }
-}
-
-class _CreateNewPresetCard extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      child: InkWell(
-        onTap: () async {
-          await showDialog<void>(
-            context: context,
-            builder: (context) => const PresetDialog(),
-          );
-        },
-        borderRadius: BorderRadius.circular(12),
-        child: Container(
-          decoration: BoxDecoration(
-            border: Border.all(
-              color: Theme.of(
-                context,
-              ).colorScheme.outline.withValues(alpha: 0.5),
-              width: 2,
-            ),
-            borderRadius: BorderRadius.circular(12),
-          ),
-          child: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(
-                  Icons.add_circle_outline,
-                  size: 48,
-                  color: context.colorScheme.primary,
-                ),
-                const Gap(12),
-                Text(
-                  'Create New Preset',
-                  style: context.textTheme.titleMedium?.copyWith(
-                    color: context.colorScheme.primary,
-                  ),
-                ),
-                const Gap(4),
-                Text(
-                  'Start from scratch or import',
-                  style: context.textTheme.bodySmall?.copyWith(
-                    color: context.colorScheme.onSurface.withValues(alpha: 0.6),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
     );
   }
 }

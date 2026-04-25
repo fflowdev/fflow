@@ -78,10 +78,9 @@ class PresetCard extends ConsumerWidget {
                       Expanded(
                         child: Text(
                           preset.name,
-                          style: Theme.of(context).textTheme.titleMedium
-                              ?.copyWith(
-                                fontWeight: FontWeight.bold,
-                              ),
+                          style: context.textTheme.titleMedium?.copyWith(
+                            fontWeight: FontWeight.bold,
+                          ),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                         ),
@@ -89,7 +88,7 @@ class PresetCard extends ConsumerWidget {
                       PopupMenuButton(
                         icon: const Icon(Icons.more_vert),
                         itemBuilder: (context) => [
-                          PopupMenuItem(
+                          PopupMenuItem<void>(
                             child: const Row(
                               children: [
                                 Icon(Icons.edit_outlined, size: 20),
@@ -97,29 +96,27 @@ class PresetCard extends ConsumerWidget {
                                 Text('Edit'),
                               ],
                             ),
-                            onTap: () {
-                              Future.delayed(Duration.zero, () {
-                                showDialog(
-                                  context: context,
-                                  builder: (context) =>
-                                      PresetDialog(preset: preset),
-                                );
-                              });
+                            onTap: () async {
+                              await showDialog<void>(
+                                context: context,
+                                builder: (context) =>
+                                    PresetDialog(preset: preset),
+                              );
                             },
                           ),
-                          PopupMenuItem(
+                          PopupMenuItem<void>(
                             child: Row(
                               children: [
                                 Icon(
                                   Icons.delete_outline,
                                   size: 20,
-                                  color: Theme.of(context).colorScheme.error,
+                                  color: context.colorScheme.error,
                                 ),
                                 const Gap(12),
                                 Text(
                                   'Delete',
                                   style: TextStyle(
-                                    color: Theme.of(context).colorScheme.error,
+                                    color: context.colorScheme.error,
                                   ),
                                 ),
                               ],
@@ -137,10 +134,10 @@ class PresetCard extends ConsumerWidget {
                   const Gap(8),
                   Text(
                     preset.description,
-                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: Theme.of(
-                        context,
-                      ).colorScheme.onSurface.withOpacity(0.6),
+                    style: context.textTheme.bodySmall?.copyWith(
+                      color: context.colorScheme.onSurface.withValues(
+                        alpha: 0.6,
+                      ),
                     ),
                     maxLines: isListView ? 2 : 3,
                     overflow: TextOverflow.ellipsis,
@@ -150,14 +147,12 @@ class PresetCard extends ConsumerWidget {
                   Container(
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
-                      color: Theme.of(
-                        context,
-                      ).colorScheme.surfaceContainerHighest,
+                      color: context.colorScheme.surfaceContainerHighest,
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Text(
                       preset.ffmpegCommand,
-                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      style: context.textTheme.bodySmall?.copyWith(
                         fontFamily: 'monospace',
                         fontSize: 11,
                       ),
@@ -170,8 +165,8 @@ class PresetCard extends ConsumerWidget {
                   Row(
                     children: [
                       TextButton.icon(
-                        onPressed: () {
-                          showDialog(
+                        onPressed: () async {
+                          await showDialog<void>(
                             context: context,
                             builder: (context) => PresetDialog(preset: preset),
                           );
@@ -183,23 +178,25 @@ class PresetCard extends ConsumerWidget {
                       IconButton(
                         icon: const Icon(Icons.content_copy_outlined, size: 20),
                         tooltip: 'Copy command',
-                        onPressed: () {
-                          Clipboard.setData(
+                        onPressed: () async {
+                          await Clipboard.setData(
                             ClipboardData(text: preset.ffmpegCommand),
                           );
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text('Command copied to clipboard'),
-                              duration: Duration(seconds: 2),
-                            ),
-                          );
+                          if (context.mounted) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('Command copied to clipboard'),
+                                duration: Duration(seconds: 2),
+                              ),
+                            );
+                          }
                         },
                       ),
                       IconButton(
                         icon: const Icon(Icons.delete_outline, size: 20),
                         tooltip: 'Delete preset',
-                        onPressed: () {
-                          showDialog(
+                        onPressed: () async {
+                          await showDialog<void>(
                             context: context,
                             builder: (context) => AlertDialog(
                               title: const Text('Delete Preset'),
