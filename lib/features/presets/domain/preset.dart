@@ -9,7 +9,7 @@ abstract class Preset with _$Preset {
     required String name,
     required String description,
     PresetCategory? category,
-    required String ffmpegCommand,
+    required String ffmpegArguments,
     @Default(false) bool isFavorite,
     DateTime? createdAt,
     DateTime? updatedAt,

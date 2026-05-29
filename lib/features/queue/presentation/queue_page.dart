@@ -1,4 +1,4 @@
-import 'package:fflow/features/home_shell/presentation/widgets/home_shell_scaffold.dart';
+import 'package:fflow/core/router/presentation/shell_route_scaffold.dart';
 import 'package:flutter/material.dart';
 
 class QueuePage extends StatelessWidget {
@@ -6,6 +6,6 @@ class QueuePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return HomeShellScaffold(title: 'Queue', body: ListView());
+    return ShellRouteScaffold(title: 'Queue', body: ListView());
   }
 }

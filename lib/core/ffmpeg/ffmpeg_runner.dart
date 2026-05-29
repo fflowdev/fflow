@@ -31,8 +31,9 @@ class FfmpegRunner {
 
     process.stdout.listen((event) {
       if (!_progressStreamController.hasListener &&
-          !_stdoutStreamController.hasListener)
+          !_stdoutStreamController.hasListener) {
         return;
+      }
       final decoded = utf8.decode(event);
       _progressStreamController.add(FFmpegProgress.parseOutput(decoded));
       _stdoutStreamController.add(decoded);
@@ -61,7 +62,7 @@ class FfmpegRunner {
     process.kill(ProcessSignal.sigcont);
   }
 
-  bool stop([bool force = false]) {
+  bool stop({bool force = false}) {
     final process = _process;
     if (process == null) {
       throw StateError('Process is not running');
@@ -74,7 +75,7 @@ class FfmpegRunner {
       throw StateError('Already disposed');
     }
 
-    stop(forceStop);
+    stop(force: forceStop);
     await _progressStreamController.close();
     await _stderrStreamController.close();
     await _stdoutStreamController.close();

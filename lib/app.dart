@@ -1,9 +1,9 @@
 import 'dart:io';
 
 import 'package:dynamic_color/dynamic_color.dart';
-import 'package:fflow/core/settings/app_settings.dart';
 import 'package:fflow/core/ffmpeg/ffmpeg_runner.dart';
-import 'package:fflow/core/router/router.dart';
+import 'package:fflow/core/router/application/router.dart';
+import 'package:fflow/core/settings/app_settings.dart';
 import 'package:fflow/core/theme/app_theme.dart';
 import 'package:ffmpeg_cli/ffmpeg_cli.dart';
 import 'package:file_picker/file_picker.dart';

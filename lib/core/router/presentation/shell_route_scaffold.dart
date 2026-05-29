@@ -2,8 +2,8 @@ import 'package:fflow/core/theme/app_theme.dart';
 import 'package:fflow/core/theme/theme_extension.dart';
 import 'package:flutter/material.dart';
 
-class HomeShellScaffold extends StatelessWidget {
-  const HomeShellScaffold({
+class ShellRouteScaffold extends StatelessWidget {
+  const ShellRouteScaffold({
     super.key,
     required this.title,
     this.titleBarActions,

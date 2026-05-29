@@ -1,5 +1,4 @@
-import 'package:fflow/core/theme/theme_extension.dart';
-import 'package:fflow/features/home_shell/presentation/widgets/home_shell_scaffold.dart';
+import 'package:fflow/core/router/presentation/shell_route_scaffold.dart';
 import 'package:fflow/features/presets/application/preset_view_mode_provider.dart';
 import 'package:fflow/features/presets/application/presets_provider.dart';
 import 'package:fflow/features/presets/application/presets_query_arguments_provider.dart';
@@ -17,7 +16,7 @@ class PresetsPage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return HomeShellScaffold(
+    return ShellRouteScaffold(
       title: 'Preset Library',
       titleBarActions: [
         OutlinedButton.icon(
@@ -35,10 +34,7 @@ class PresetsPage extends HookConsumerWidget {
         const Gap(12),
         FilledButton.icon(
           onPressed: () async {
-            await showDialog<void>(
-              context: context,
-              builder: (context) => const PresetDialog(),
-            );
+            await const PresetDialog().show(context);
           },
           icon: const Icon(Icons.add),
           label: const Text('New Preset'),

@@ -1,7 +1,7 @@
-import 'package:fflow/core/router/router.dart';
+import 'package:fflow/core/router/application/router.dart';
+import 'package:fflow/core/router/domain/home_shell_navigation_destination.dart';
 import 'package:fflow/core/theme/extentions/navigation_theme.dart';
 import 'package:fflow/core/theme/theme_extension.dart';
-import 'package:fflow/features/home_shell/domain/home_page_navigation_destination.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
@@ -14,26 +14,26 @@ class HomeShell extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     const destinations = [
-      HomePageNavigationDestination.item(
+      HomeShellNavigationDestination.item(
         'Queue',
         Icons.playlist_play_outlined,
         Icons.playlist_play,
         QueueRoute(),
       ),
-      HomePageNavigationDestination.item(
+      HomeShellNavigationDestination.item(
         'Presets',
         Icons.tune_outlined,
         Icons.tune,
         PresetsRoute(),
       ),
-      HomePageNavigationDestination.item(
+      HomeShellNavigationDestination.item(
         'Debug',
         Icons.bug_report_outlined,
         Icons.bug_report,
         DebugRoute(),
       ),
-      HomePageNavigationDestination.divider(),
-      HomePageNavigationDestination.item(
+      HomeShellNavigationDestination.divider(),
+      HomeShellNavigationDestination.item(
         'Settings',
         Icons.settings_outlined,
         Icons.settings,
@@ -57,7 +57,7 @@ class _Navigation extends StatelessWidget {
     required this.destinations,
   });
 
-  final List<HomePageNavigationDestination> destinations;
+  final List<HomeShellNavigationDestination> destinations;
 
   @override
   Widget build(BuildContext context) {
@@ -83,7 +83,7 @@ class _Navigation extends StatelessWidget {
                     (index) {
                       final destination = destinations[index];
                       return switch (destination) {
-                        HomePageNavigationDestinationItem(
+                        HomeShellNavigationDestinationItem(
                           :final icon,
                           :final label,
                           :final route,
@@ -96,13 +96,14 @@ class _Navigation extends StatelessWidget {
                             icon: icon,
                             label: label,
                           ),
-                        HomePageNavigationDestinationDivider() => const Divider(
-                          color: Color(0xFFC4C6D0),
-                          thickness: 1,
-                          indent: 16,
-                          endIndent: 16,
-                          height: 8,
-                        ),
+                        HomeShellNavigationDestinationDivider() =>
+                          const Divider(
+                            color: Color(0xFFC4C6D0),
+                            thickness: 1,
+                            indent: 16,
+                            endIndent: 16,
+                            height: 8,
+                          ),
                       };
                     },
                   ),

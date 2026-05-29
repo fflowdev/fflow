@@ -151,7 +151,7 @@ class PresetCard extends ConsumerWidget {
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Text(
-                      preset.ffmpegCommand,
+                      preset.ffmpegArguments,
                       style: context.textTheme.bodySmall?.copyWith(
                         fontFamily: 'monospace',
                         fontSize: 11,
@@ -180,12 +180,12 @@ class PresetCard extends ConsumerWidget {
                         tooltip: 'Copy command',
                         onPressed: () async {
                           await Clipboard.setData(
-                            ClipboardData(text: preset.ffmpegCommand),
+                            ClipboardData(text: preset.ffmpegArguments),
                           );
                           if (context.mounted) {
                             ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(
-                                content: Text('Command copied to clipboard'),
+                                content: Text('Arguments copied to clipboard'),
                                 duration: Duration(seconds: 2),
                               ),
                             );
@@ -201,7 +201,7 @@ class PresetCard extends ConsumerWidget {
                             builder: (context) => AlertDialog(
                               title: const Text('Delete Preset'),
                               content: Text(
-                                'Are you sure you want to delete "${preset.name}"?',
+                                '''Are you sure you want to delete "${preset.name}"?''',
                               ),
                               actions: [
                                 TextButton(

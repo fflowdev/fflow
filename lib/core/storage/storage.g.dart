@@ -267,12 +267,12 @@ class $PresetsTable extends Presets with TableInfo<$PresetsTable, PresetData> {
       'REFERENCES preset_categories (name)',
     ),
   );
-  static const VerificationMeta _ffmpegCommandMeta = const VerificationMeta(
-    'ffmpegCommand',
+  static const VerificationMeta _ffmpegArgumentsMeta = const VerificationMeta(
+    'ffmpegArguments',
   );
   @override
-  late final GeneratedColumn<String> ffmpegCommand = GeneratedColumn<String>(
-    'ffmpeg_command',
+  late final GeneratedColumn<String> ffmpegArguments = GeneratedColumn<String>(
+    'ffmpeg_arguments',
     aliasedName,
     false,
     type: DriftSqlType.string,
@@ -320,7 +320,7 @@ class $PresetsTable extends Presets with TableInfo<$PresetsTable, PresetData> {
     name,
     description,
     category,
-    ffmpegCommand,
+    ffmpegArguments,
     isFavorite,
     createdAt,
     updatedAt,
@@ -362,16 +362,16 @@ class $PresetsTable extends Presets with TableInfo<$PresetsTable, PresetData> {
         category.isAcceptableOrUnknown(data['category']!, _categoryMeta),
       );
     }
-    if (data.containsKey('ffmpeg_command')) {
+    if (data.containsKey('ffmpeg_arguments')) {
       context.handle(
-        _ffmpegCommandMeta,
-        ffmpegCommand.isAcceptableOrUnknown(
-          data['ffmpeg_command']!,
-          _ffmpegCommandMeta,
+        _ffmpegArgumentsMeta,
+        ffmpegArguments.isAcceptableOrUnknown(
+          data['ffmpeg_arguments']!,
+          _ffmpegArgumentsMeta,
         ),
       );
     } else if (isInserting) {
-      context.missing(_ffmpegCommandMeta);
+      context.missing(_ffmpegArgumentsMeta);
     }
     if (data.containsKey('is_favorite')) {
       context.handle(
@@ -412,9 +412,9 @@ class $PresetsTable extends Presets with TableInfo<$PresetsTable, PresetData> {
         DriftSqlType.string,
         data['${effectivePrefix}category'],
       ),
-      ffmpegCommand: attachedDatabase.typeMapping.read(
+      ffmpegArguments: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
-        data['${effectivePrefix}ffmpeg_command'],
+        data['${effectivePrefix}ffmpeg_arguments'],
       )!,
       isFavorite: attachedDatabase.typeMapping.read(
         DriftSqlType.bool,
@@ -441,7 +441,7 @@ class PresetData extends DataClass implements Insertable<PresetData> {
   final String name;
   final String description;
   final String? category;
-  final String ffmpegCommand;
+  final String ffmpegArguments;
   final bool isFavorite;
   final DateTime? createdAt;
   final DateTime? updatedAt;
@@ -449,7 +449,7 @@ class PresetData extends DataClass implements Insertable<PresetData> {
     required this.name,
     required this.description,
     this.category,
-    required this.ffmpegCommand,
+    required this.ffmpegArguments,
     required this.isFavorite,
     this.createdAt,
     this.updatedAt,
@@ -462,7 +462,7 @@ class PresetData extends DataClass implements Insertable<PresetData> {
     if (!nullToAbsent || category != null) {
       map['category'] = Variable<String>(category);
     }
-    map['ffmpeg_command'] = Variable<String>(ffmpegCommand);
+    map['ffmpeg_arguments'] = Variable<String>(ffmpegArguments);
     map['is_favorite'] = Variable<bool>(isFavorite);
     if (!nullToAbsent || createdAt != null) {
       map['created_at'] = Variable<DateTime>(createdAt);
@@ -480,7 +480,7 @@ class PresetData extends DataClass implements Insertable<PresetData> {
       category: category == null && nullToAbsent
           ? const Value.absent()
           : Value(category),
-      ffmpegCommand: Value(ffmpegCommand),
+      ffmpegArguments: Value(ffmpegArguments),
       isFavorite: Value(isFavorite),
       createdAt: createdAt == null && nullToAbsent
           ? const Value.absent()
@@ -500,7 +500,7 @@ class PresetData extends DataClass implements Insertable<PresetData> {
       name: serializer.fromJson<String>(json['name']),
       description: serializer.fromJson<String>(json['description']),
       category: serializer.fromJson<String?>(json['category']),
-      ffmpegCommand: serializer.fromJson<String>(json['ffmpegCommand']),
+      ffmpegArguments: serializer.fromJson<String>(json['ffmpegArguments']),
       isFavorite: serializer.fromJson<bool>(json['isFavorite']),
       createdAt: serializer.fromJson<DateTime?>(json['createdAt']),
       updatedAt: serializer.fromJson<DateTime?>(json['updatedAt']),
@@ -513,7 +513,7 @@ class PresetData extends DataClass implements Insertable<PresetData> {
       'name': serializer.toJson<String>(name),
       'description': serializer.toJson<String>(description),
       'category': serializer.toJson<String?>(category),
-      'ffmpegCommand': serializer.toJson<String>(ffmpegCommand),
+      'ffmpegArguments': serializer.toJson<String>(ffmpegArguments),
       'isFavorite': serializer.toJson<bool>(isFavorite),
       'createdAt': serializer.toJson<DateTime?>(createdAt),
       'updatedAt': serializer.toJson<DateTime?>(updatedAt),
@@ -524,7 +524,7 @@ class PresetData extends DataClass implements Insertable<PresetData> {
     String? name,
     String? description,
     Value<String?> category = const Value.absent(),
-    String? ffmpegCommand,
+    String? ffmpegArguments,
     bool? isFavorite,
     Value<DateTime?> createdAt = const Value.absent(),
     Value<DateTime?> updatedAt = const Value.absent(),
@@ -532,7 +532,7 @@ class PresetData extends DataClass implements Insertable<PresetData> {
     name: name ?? this.name,
     description: description ?? this.description,
     category: category.present ? category.value : this.category,
-    ffmpegCommand: ffmpegCommand ?? this.ffmpegCommand,
+    ffmpegArguments: ffmpegArguments ?? this.ffmpegArguments,
     isFavorite: isFavorite ?? this.isFavorite,
     createdAt: createdAt.present ? createdAt.value : this.createdAt,
     updatedAt: updatedAt.present ? updatedAt.value : this.updatedAt,
@@ -544,9 +544,9 @@ class PresetData extends DataClass implements Insertable<PresetData> {
           ? data.description.value
           : this.description,
       category: data.category.present ? data.category.value : this.category,
-      ffmpegCommand: data.ffmpegCommand.present
-          ? data.ffmpegCommand.value
-          : this.ffmpegCommand,
+      ffmpegArguments: data.ffmpegArguments.present
+          ? data.ffmpegArguments.value
+          : this.ffmpegArguments,
       isFavorite: data.isFavorite.present
           ? data.isFavorite.value
           : this.isFavorite,
@@ -561,7 +561,7 @@ class PresetData extends DataClass implements Insertable<PresetData> {
           ..write('name: $name, ')
           ..write('description: $description, ')
           ..write('category: $category, ')
-          ..write('ffmpegCommand: $ffmpegCommand, ')
+          ..write('ffmpegArguments: $ffmpegArguments, ')
           ..write('isFavorite: $isFavorite, ')
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt')
@@ -574,7 +574,7 @@ class PresetData extends DataClass implements Insertable<PresetData> {
     name,
     description,
     category,
-    ffmpegCommand,
+    ffmpegArguments,
     isFavorite,
     createdAt,
     updatedAt,
@@ -586,7 +586,7 @@ class PresetData extends DataClass implements Insertable<PresetData> {
           other.name == this.name &&
           other.description == this.description &&
           other.category == this.category &&
-          other.ffmpegCommand == this.ffmpegCommand &&
+          other.ffmpegArguments == this.ffmpegArguments &&
           other.isFavorite == this.isFavorite &&
           other.createdAt == this.createdAt &&
           other.updatedAt == this.updatedAt);
@@ -596,7 +596,7 @@ class PresetsCompanion extends UpdateCompanion<PresetData> {
   final Value<String> name;
   final Value<String> description;
   final Value<String?> category;
-  final Value<String> ffmpegCommand;
+  final Value<String> ffmpegArguments;
   final Value<bool> isFavorite;
   final Value<DateTime?> createdAt;
   final Value<DateTime?> updatedAt;
@@ -605,7 +605,7 @@ class PresetsCompanion extends UpdateCompanion<PresetData> {
     this.name = const Value.absent(),
     this.description = const Value.absent(),
     this.category = const Value.absent(),
-    this.ffmpegCommand = const Value.absent(),
+    this.ffmpegArguments = const Value.absent(),
     this.isFavorite = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.updatedAt = const Value.absent(),
@@ -615,19 +615,19 @@ class PresetsCompanion extends UpdateCompanion<PresetData> {
     required String name,
     required String description,
     this.category = const Value.absent(),
-    required String ffmpegCommand,
+    required String ffmpegArguments,
     this.isFavorite = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.updatedAt = const Value.absent(),
     this.rowid = const Value.absent(),
   }) : name = Value(name),
        description = Value(description),
-       ffmpegCommand = Value(ffmpegCommand);
+       ffmpegArguments = Value(ffmpegArguments);
   static Insertable<PresetData> custom({
     Expression<String>? name,
     Expression<String>? description,
     Expression<String>? category,
-    Expression<String>? ffmpegCommand,
+    Expression<String>? ffmpegArguments,
     Expression<bool>? isFavorite,
     Expression<DateTime>? createdAt,
     Expression<DateTime>? updatedAt,
@@ -637,7 +637,7 @@ class PresetsCompanion extends UpdateCompanion<PresetData> {
       if (name != null) 'name': name,
       if (description != null) 'description': description,
       if (category != null) 'category': category,
-      if (ffmpegCommand != null) 'ffmpeg_command': ffmpegCommand,
+      if (ffmpegArguments != null) 'ffmpeg_arguments': ffmpegArguments,
       if (isFavorite != null) 'is_favorite': isFavorite,
       if (createdAt != null) 'created_at': createdAt,
       if (updatedAt != null) 'updated_at': updatedAt,
@@ -649,7 +649,7 @@ class PresetsCompanion extends UpdateCompanion<PresetData> {
     Value<String>? name,
     Value<String>? description,
     Value<String?>? category,
-    Value<String>? ffmpegCommand,
+    Value<String>? ffmpegArguments,
     Value<bool>? isFavorite,
     Value<DateTime?>? createdAt,
     Value<DateTime?>? updatedAt,
@@ -659,7 +659,7 @@ class PresetsCompanion extends UpdateCompanion<PresetData> {
       name: name ?? this.name,
       description: description ?? this.description,
       category: category ?? this.category,
-      ffmpegCommand: ffmpegCommand ?? this.ffmpegCommand,
+      ffmpegArguments: ffmpegArguments ?? this.ffmpegArguments,
       isFavorite: isFavorite ?? this.isFavorite,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
@@ -679,8 +679,8 @@ class PresetsCompanion extends UpdateCompanion<PresetData> {
     if (category.present) {
       map['category'] = Variable<String>(category.value);
     }
-    if (ffmpegCommand.present) {
-      map['ffmpeg_command'] = Variable<String>(ffmpegCommand.value);
+    if (ffmpegArguments.present) {
+      map['ffmpeg_arguments'] = Variable<String>(ffmpegArguments.value);
     }
     if (isFavorite.present) {
       map['is_favorite'] = Variable<bool>(isFavorite.value);
@@ -703,7 +703,7 @@ class PresetsCompanion extends UpdateCompanion<PresetData> {
           ..write('name: $name, ')
           ..write('description: $description, ')
           ..write('category: $category, ')
-          ..write('ffmpegCommand: $ffmpegCommand, ')
+          ..write('ffmpegArguments: $ffmpegArguments, ')
           ..write('isFavorite: $isFavorite, ')
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt, ')
@@ -999,7 +999,7 @@ typedef $$PresetsTableCreateCompanionBuilder =
       required String name,
       required String description,
       Value<String?> category,
-      required String ffmpegCommand,
+      required String ffmpegArguments,
       Value<bool> isFavorite,
       Value<DateTime?> createdAt,
       Value<DateTime?> updatedAt,
@@ -1010,7 +1010,7 @@ typedef $$PresetsTableUpdateCompanionBuilder =
       Value<String> name,
       Value<String> description,
       Value<String?> category,
-      Value<String> ffmpegCommand,
+      Value<String> ffmpegArguments,
       Value<bool> isFavorite,
       Value<DateTime?> createdAt,
       Value<DateTime?> updatedAt,
@@ -1060,8 +1060,8 @@ class $$PresetsTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
-  ColumnFilters<String> get ffmpegCommand => $composableBuilder(
-    column: $table.ffmpegCommand,
+  ColumnFilters<String> get ffmpegArguments => $composableBuilder(
+    column: $table.ffmpegArguments,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -1123,8 +1123,8 @@ class $$PresetsTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
-  ColumnOrderings<String> get ffmpegCommand => $composableBuilder(
-    column: $table.ffmpegCommand,
+  ColumnOrderings<String> get ffmpegArguments => $composableBuilder(
+    column: $table.ffmpegArguments,
     builder: (column) => ColumnOrderings(column),
   );
 
@@ -1184,8 +1184,8 @@ class $$PresetsTableAnnotationComposer
     builder: (column) => column,
   );
 
-  GeneratedColumn<String> get ffmpegCommand => $composableBuilder(
-    column: $table.ffmpegCommand,
+  GeneratedColumn<String> get ffmpegArguments => $composableBuilder(
+    column: $table.ffmpegArguments,
     builder: (column) => column,
   );
 
@@ -1255,7 +1255,7 @@ class $$PresetsTableTableManager
                 Value<String> name = const Value.absent(),
                 Value<String> description = const Value.absent(),
                 Value<String?> category = const Value.absent(),
-                Value<String> ffmpegCommand = const Value.absent(),
+                Value<String> ffmpegArguments = const Value.absent(),
                 Value<bool> isFavorite = const Value.absent(),
                 Value<DateTime?> createdAt = const Value.absent(),
                 Value<DateTime?> updatedAt = const Value.absent(),
@@ -1264,7 +1264,7 @@ class $$PresetsTableTableManager
                 name: name,
                 description: description,
                 category: category,
-                ffmpegCommand: ffmpegCommand,
+                ffmpegArguments: ffmpegArguments,
                 isFavorite: isFavorite,
                 createdAt: createdAt,
                 updatedAt: updatedAt,
@@ -1275,7 +1275,7 @@ class $$PresetsTableTableManager
                 required String name,
                 required String description,
                 Value<String?> category = const Value.absent(),
-                required String ffmpegCommand,
+                required String ffmpegArguments,
                 Value<bool> isFavorite = const Value.absent(),
                 Value<DateTime?> createdAt = const Value.absent(),
                 Value<DateTime?> updatedAt = const Value.absent(),
@@ -1284,7 +1284,7 @@ class $$PresetsTableTableManager
                 name: name,
                 description: description,
                 category: category,
-                ffmpegCommand: ffmpegCommand,
+                ffmpegArguments: ffmpegArguments,
                 isFavorite: isFavorite,
                 createdAt: createdAt,
                 updatedAt: updatedAt,

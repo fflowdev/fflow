@@ -1,5 +1,8 @@
+import 'package:fflow/core/notification/domain/app_notification_item.dart';
+import 'package:fflow/core/notification/domain/app_notification_type.dart';
+import 'package:fflow/core/notification/presentation/app_notification_builder.dart';
+import 'package:fflow/core/router/presentation/shell_route_scaffold.dart';
 import 'package:fflow/core/storage/storage.dart';
-import 'package:fflow/features/home_shell/presentation/widgets/home_shell_scaffold.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
@@ -8,7 +11,7 @@ class DebugPage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return HomeShellScaffold(
+    return ShellRouteScaffold(
       title: 'Debug',
       body: ListView(
         children: [
@@ -19,6 +22,22 @@ class DebugPage extends HookConsumerWidget {
           ListTile(
             title: const Text('Clear Database'),
             onTap: storage.clearDatabase,
+          ),
+          ListTile(
+            title: const Text('Test App Notification'),
+            onTap: () {
+              final notification = context.notification;
+              notification.push(
+                AppNotificationItem(
+                  content: 'Test content(${notification.notifications.length})',
+                  type:
+                      AppNotificationType.values[notification
+                              .notifications
+                              .length %
+                          AppNotificationType.values.length],
+                ),
+              );
+            },
           ),
         ],
       ),

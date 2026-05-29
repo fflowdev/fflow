@@ -7,7 +7,7 @@ class Presets extends Table {
   TextColumn get description => text()();
   TextColumn get category =>
       text().references(PresetCategories, #name).nullable()();
-  TextColumn get ffmpegCommand => text()();
+  TextColumn get ffmpegArguments => text()();
   BoolColumn get isFavorite => boolean().withDefault(const Constant(false))();
   DateTimeColumn get createdAt => dateTime().nullable()();
   DateTimeColumn get updatedAt => dateTime().nullable()();

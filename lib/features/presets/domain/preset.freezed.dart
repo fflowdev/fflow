@@ -14,7 +14,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$Preset {
 
- String get name; String get description; PresetCategory? get category; String get ffmpegCommand; bool get isFavorite; DateTime? get createdAt; DateTime? get updatedAt;
+ String get name; String get description; PresetCategory? get category; String get ffmpegArguments; bool get isFavorite; DateTime? get createdAt; DateTime? get updatedAt;
 /// Create a copy of Preset
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -25,16 +25,16 @@ $PresetCopyWith<Preset> get copyWith => _$PresetCopyWithImpl<Preset>(this as Pre
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Preset&&(identical(other.name, name) || other.name == name)&&(identical(other.description, description) || other.description == description)&&(identical(other.category, category) || other.category == category)&&(identical(other.ffmpegCommand, ffmpegCommand) || other.ffmpegCommand == ffmpegCommand)&&(identical(other.isFavorite, isFavorite) || other.isFavorite == isFavorite)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is Preset&&(identical(other.name, name) || other.name == name)&&(identical(other.description, description) || other.description == description)&&(identical(other.category, category) || other.category == category)&&(identical(other.ffmpegArguments, ffmpegArguments) || other.ffmpegArguments == ffmpegArguments)&&(identical(other.isFavorite, isFavorite) || other.isFavorite == isFavorite)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,name,description,category,ffmpegCommand,isFavorite,createdAt,updatedAt);
+int get hashCode => Object.hash(runtimeType,name,description,category,ffmpegArguments,isFavorite,createdAt,updatedAt);
 
 @override
 String toString() {
-  return 'Preset(name: $name, description: $description, category: $category, ffmpegCommand: $ffmpegCommand, isFavorite: $isFavorite, createdAt: $createdAt, updatedAt: $updatedAt)';
+  return 'Preset(name: $name, description: $description, category: $category, ffmpegArguments: $ffmpegArguments, isFavorite: $isFavorite, createdAt: $createdAt, updatedAt: $updatedAt)';
 }
 
 
@@ -45,7 +45,7 @@ abstract mixin class $PresetCopyWith<$Res>  {
   factory $PresetCopyWith(Preset value, $Res Function(Preset) _then) = _$PresetCopyWithImpl;
 @useResult
 $Res call({
- String name, String description, PresetCategory? category, String ffmpegCommand, bool isFavorite, DateTime? createdAt, DateTime? updatedAt
+ String name, String description, PresetCategory? category, String ffmpegArguments, bool isFavorite, DateTime? createdAt, DateTime? updatedAt
 });
 
 
@@ -62,12 +62,12 @@ class _$PresetCopyWithImpl<$Res>
 
 /// Create a copy of Preset
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? name = null,Object? description = null,Object? category = freezed,Object? ffmpegCommand = null,Object? isFavorite = null,Object? createdAt = freezed,Object? updatedAt = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? name = null,Object? description = null,Object? category = freezed,Object? ffmpegArguments = null,Object? isFavorite = null,Object? createdAt = freezed,Object? updatedAt = freezed,}) {
   return _then(_self.copyWith(
 name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,description: null == description ? _self.description : description // ignore: cast_nullable_to_non_nullable
 as String,category: freezed == category ? _self.category : category // ignore: cast_nullable_to_non_nullable
-as PresetCategory?,ffmpegCommand: null == ffmpegCommand ? _self.ffmpegCommand : ffmpegCommand // ignore: cast_nullable_to_non_nullable
+as PresetCategory?,ffmpegArguments: null == ffmpegArguments ? _self.ffmpegArguments : ffmpegArguments // ignore: cast_nullable_to_non_nullable
 as String,isFavorite: null == isFavorite ? _self.isFavorite : isFavorite // ignore: cast_nullable_to_non_nullable
 as bool,createdAt: freezed == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
 as DateTime?,updatedAt: freezed == updatedAt ? _self.updatedAt : updatedAt // ignore: cast_nullable_to_non_nullable
@@ -168,10 +168,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String name,  String description,  PresetCategory? category,  String ffmpegCommand,  bool isFavorite,  DateTime? createdAt,  DateTime? updatedAt)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String name,  String description,  PresetCategory? category,  String ffmpegArguments,  bool isFavorite,  DateTime? createdAt,  DateTime? updatedAt)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Preset() when $default != null:
-return $default(_that.name,_that.description,_that.category,_that.ffmpegCommand,_that.isFavorite,_that.createdAt,_that.updatedAt);case _:
+return $default(_that.name,_that.description,_that.category,_that.ffmpegArguments,_that.isFavorite,_that.createdAt,_that.updatedAt);case _:
   return orElse();
 
 }
@@ -189,10 +189,10 @@ return $default(_that.name,_that.description,_that.category,_that.ffmpegCommand,
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String name,  String description,  PresetCategory? category,  String ffmpegCommand,  bool isFavorite,  DateTime? createdAt,  DateTime? updatedAt)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String name,  String description,  PresetCategory? category,  String ffmpegArguments,  bool isFavorite,  DateTime? createdAt,  DateTime? updatedAt)  $default,) {final _that = this;
 switch (_that) {
 case _Preset():
-return $default(_that.name,_that.description,_that.category,_that.ffmpegCommand,_that.isFavorite,_that.createdAt,_that.updatedAt);case _:
+return $default(_that.name,_that.description,_that.category,_that.ffmpegArguments,_that.isFavorite,_that.createdAt,_that.updatedAt);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -209,10 +209,10 @@ return $default(_that.name,_that.description,_that.category,_that.ffmpegCommand,
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String name,  String description,  PresetCategory? category,  String ffmpegCommand,  bool isFavorite,  DateTime? createdAt,  DateTime? updatedAt)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String name,  String description,  PresetCategory? category,  String ffmpegArguments,  bool isFavorite,  DateTime? createdAt,  DateTime? updatedAt)?  $default,) {final _that = this;
 switch (_that) {
 case _Preset() when $default != null:
-return $default(_that.name,_that.description,_that.category,_that.ffmpegCommand,_that.isFavorite,_that.createdAt,_that.updatedAt);case _:
+return $default(_that.name,_that.description,_that.category,_that.ffmpegArguments,_that.isFavorite,_that.createdAt,_that.updatedAt);case _:
   return null;
 
 }
@@ -224,13 +224,13 @@ return $default(_that.name,_that.description,_that.category,_that.ffmpegCommand,
 
 
 class _Preset implements Preset {
-  const _Preset({required this.name, required this.description, this.category, required this.ffmpegCommand, this.isFavorite = false, this.createdAt, this.updatedAt});
+  const _Preset({required this.name, required this.description, this.category, required this.ffmpegArguments, this.isFavorite = false, this.createdAt, this.updatedAt});
   
 
 @override final  String name;
 @override final  String description;
 @override final  PresetCategory? category;
-@override final  String ffmpegCommand;
+@override final  String ffmpegArguments;
 @override@JsonKey() final  bool isFavorite;
 @override final  DateTime? createdAt;
 @override final  DateTime? updatedAt;
@@ -245,16 +245,16 @@ _$PresetCopyWith<_Preset> get copyWith => __$PresetCopyWithImpl<_Preset>(this, _
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Preset&&(identical(other.name, name) || other.name == name)&&(identical(other.description, description) || other.description == description)&&(identical(other.category, category) || other.category == category)&&(identical(other.ffmpegCommand, ffmpegCommand) || other.ffmpegCommand == ffmpegCommand)&&(identical(other.isFavorite, isFavorite) || other.isFavorite == isFavorite)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Preset&&(identical(other.name, name) || other.name == name)&&(identical(other.description, description) || other.description == description)&&(identical(other.category, category) || other.category == category)&&(identical(other.ffmpegArguments, ffmpegArguments) || other.ffmpegArguments == ffmpegArguments)&&(identical(other.isFavorite, isFavorite) || other.isFavorite == isFavorite)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,name,description,category,ffmpegCommand,isFavorite,createdAt,updatedAt);
+int get hashCode => Object.hash(runtimeType,name,description,category,ffmpegArguments,isFavorite,createdAt,updatedAt);
 
 @override
 String toString() {
-  return 'Preset(name: $name, description: $description, category: $category, ffmpegCommand: $ffmpegCommand, isFavorite: $isFavorite, createdAt: $createdAt, updatedAt: $updatedAt)';
+  return 'Preset(name: $name, description: $description, category: $category, ffmpegArguments: $ffmpegArguments, isFavorite: $isFavorite, createdAt: $createdAt, updatedAt: $updatedAt)';
 }
 
 
@@ -265,7 +265,7 @@ abstract mixin class _$PresetCopyWith<$Res> implements $PresetCopyWith<$Res> {
   factory _$PresetCopyWith(_Preset value, $Res Function(_Preset) _then) = __$PresetCopyWithImpl;
 @override @useResult
 $Res call({
- String name, String description, PresetCategory? category, String ffmpegCommand, bool isFavorite, DateTime? createdAt, DateTime? updatedAt
+ String name, String description, PresetCategory? category, String ffmpegArguments, bool isFavorite, DateTime? createdAt, DateTime? updatedAt
 });
 
 
@@ -282,12 +282,12 @@ class __$PresetCopyWithImpl<$Res>
 
 /// Create a copy of Preset
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? name = null,Object? description = null,Object? category = freezed,Object? ffmpegCommand = null,Object? isFavorite = null,Object? createdAt = freezed,Object? updatedAt = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? name = null,Object? description = null,Object? category = freezed,Object? ffmpegArguments = null,Object? isFavorite = null,Object? createdAt = freezed,Object? updatedAt = freezed,}) {
   return _then(_Preset(
 name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,description: null == description ? _self.description : description // ignore: cast_nullable_to_non_nullable
 as String,category: freezed == category ? _self.category : category // ignore: cast_nullable_to_non_nullable
-as PresetCategory?,ffmpegCommand: null == ffmpegCommand ? _self.ffmpegCommand : ffmpegCommand // ignore: cast_nullable_to_non_nullable
+as PresetCategory?,ffmpegArguments: null == ffmpegArguments ? _self.ffmpegArguments : ffmpegArguments // ignore: cast_nullable_to_non_nullable
 as String,isFavorite: null == isFavorite ? _self.isFavorite : isFavorite // ignore: cast_nullable_to_non_nullable
 as bool,createdAt: freezed == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
 as DateTime?,updatedAt: freezed == updatedAt ? _self.updatedAt : updatedAt // ignore: cast_nullable_to_non_nullable

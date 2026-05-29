@@ -5,7 +5,7 @@ import 'package:fflow/core/extension/iterable_extension.dart';
 import 'package:fflow/core/theme/extentions/settings_page_theme.dart';
 import 'package:fflow/core/utils/logger.dart';
 import 'package:fflow/core/widgets/app_dialog.dart';
-import 'package:fflow/features/home_shell/presentation/widgets/home_shell_scaffold.dart';
+import 'package:fflow/core/router/presentation/shell_route_scaffold.dart';
 import 'package:fflow/features/settings/application/ffmpeg_version_output_provider.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
@@ -123,7 +123,7 @@ class SettingsPage extends HookConsumerWidget {
       outputDiretoryPathTextEditingController.text = directoryPath;
     }
 
-    return HomeShellScaffold(
+    return ShellRouteScaffold(
       title: 'Settings',
       body: ListView(
         padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 16),

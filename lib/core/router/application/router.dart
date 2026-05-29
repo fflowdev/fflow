@@ -1,5 +1,5 @@
+import 'package:fflow/core/router/presentation/home_shell.dart';
 import 'package:fflow/features/debug/presentation/debug_page.dart';
-import 'package:fflow/features/home_shell/presentation/home_shell.dart';
 import 'package:fflow/features/presets/presentation/presets_page.dart';
 import 'package:fflow/features/queue/presentation/queue_page.dart';
 import 'package:fflow/features/settings/presentation/settings_page.dart';
@@ -10,7 +10,7 @@ part 'router.g.dart';
 
 final router = GoRouter(
   routes: $appRoutes,
-  initialLocation: '/queue',
+  initialLocation: const QueueRoute().location,
   navigatorKey: rootNavigatorKey,
 );
 

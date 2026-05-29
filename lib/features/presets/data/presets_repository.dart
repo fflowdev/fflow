@@ -16,7 +16,7 @@ class PresetsRepository
           name: preset.name,
           description: preset.description,
           category: preset.category?.name,
-          ffmpegCommand: preset.ffmpegCommand,
+          ffmpegArguments: preset.ffmpegArguments,
           isFavorite: preset.isFavorite,
           createdAt: preset.createdAt,
           updatedAt: preset.updatedAt,
@@ -27,7 +27,7 @@ class PresetsRepository
           category: data.category != null
               ? PresetCategory(data.category!)
               : null,
-          ffmpegCommand: data.ffmpegCommand,
+          ffmpegArguments: data.ffmpegArguments,
           isFavorite: data.isFavorite,
           createdAt: data.createdAt,
           updatedAt: data.updatedAt,

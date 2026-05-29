@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:drift/drift.dart';
 import 'package:drift_flutter/drift_flutter.dart';
 import 'package:fflow/core/json/json_typedef.dart';
+import 'package:fflow/core/utils/logger.dart';
 import 'package:fflow/features/presets/domain/preset_categories_table.dart';
 import 'package:fflow/features/presets/domain/presets_table.dart';
 import 'package:path_provider/path_provider.dart';
@@ -46,10 +47,22 @@ class Storage {
     __prefs = await SharedPreferences.getInstance();
   }
 
-  Future<bool> clearSharedPreferences() => _prefs.clear();
-  Future<List<int>> clearDatabase() async => [
-    for (final table in _database.allTables) await _database.delete(table).go(),
-  ];
+  Future<bool> clearSharedPreferences() async {
+    final result = await _prefs.clear();
+    logger.i('SharedPreferences cleared: $result');
+    return result;
+  }
+
+  Future<List<int>> clearDatabase() async {
+    final result = await _database.transaction(() async {
+      return [
+        for (final table in _database.allTables)
+          await _database.delete(table).go(),
+      ];
+    });
+    logger.i('Database cleared: $result');
+    return result;
+  }
 }
 
 class RepositoryJsonHandler<T> {

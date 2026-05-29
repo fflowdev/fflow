@@ -10,6 +10,13 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 class PresetDialog extends HookConsumerWidget {
   const PresetDialog({super.key, this.preset});
 
+  Future<Preset?> show(BuildContext context) {
+    return showDialog<Preset>(
+      context: context,
+      builder: (context) => PresetDialog(preset: preset),
+    );
+  }
+
   final Preset? preset;
 
   @override
@@ -19,8 +26,8 @@ class PresetDialog extends HookConsumerWidget {
     final descriptionController = useTextEditingController(
       text: preset?.description ?? '',
     );
-    final commandController = useTextEditingController(
-      text: preset?.ffmpegCommand ?? '',
+    final argumentsController = useTextEditingController(
+      text: preset?.ffmpegArguments ?? '',
     );
     final selectedCategory = useValueNotifier<PresetCategory?>(null);
 
@@ -37,7 +44,6 @@ class PresetDialog extends HookConsumerWidget {
                 controller: nameController,
                 decoration: const InputDecoration(
                   labelText: 'Name',
-                  border: OutlineInputBorder(),
                 ),
               ),
               const Gap(16),
@@ -45,7 +51,6 @@ class PresetDialog extends HookConsumerWidget {
                 controller: descriptionController,
                 decoration: const InputDecoration(
                   labelText: 'Description',
-                  border: OutlineInputBorder(),
                 ),
                 maxLines: 2,
               ),
@@ -57,7 +62,6 @@ class PresetDialog extends HookConsumerWidget {
                     initialValue: selectedCategory.value,
                     decoration: const InputDecoration(
                       labelText: 'Category',
-                      border: OutlineInputBorder(),
                     ),
                     items: categories?.map((category) {
                       return DropdownMenuItem(
@@ -75,10 +79,9 @@ class PresetDialog extends HookConsumerWidget {
               ),
               const Gap(16),
               TextField(
-                controller: commandController,
+                controller: argumentsController,
                 decoration: const InputDecoration(
-                  labelText: 'FFmpeg Command',
-                  border: OutlineInputBorder(),
+                  labelText: 'FFmpeg Arguments',
                 ),
                 maxLines: 4,
               ),
@@ -95,14 +98,17 @@ class PresetDialog extends HookConsumerWidget {
           onPressed: () async {
             final name = nameController.text.trim();
             final description = descriptionController.text.trim();
-            final command = commandController.text.trim();
+            final arguments = argumentsController.text.trim();
 
-            if (name.isEmpty || command.isEmpty) {
+            if (name.isEmpty || arguments.isEmpty) {
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(
-                  content: Text('Name and command are required'),
+                  content: Text('Name and FFmpeg arguments cannot be empty.'),
                 ),
               );
+              // context.notification.showError(
+              //   message: 'Name and FFmpeg arguments cannot be empty.',
+              // );
               return;
             }
 
@@ -110,7 +116,7 @@ class PresetDialog extends HookConsumerWidget {
               name: name,
               description: description,
               category: selectedCategory.value,
-              ffmpegCommand: command,
+              ffmpegArguments: arguments,
               isFavorite: preset?.isFavorite ?? false,
               createdAt: preset?.createdAt,
             );
