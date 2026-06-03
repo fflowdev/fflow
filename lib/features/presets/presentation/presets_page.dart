@@ -274,6 +274,7 @@ class _PresetCategoryAddDialog extends HookConsumerWidget {
                 decoration: const InputDecoration(
                   hintText: 'Category Name',
                 ),
+                maxLength: 30,
                 validator: (value) {
                   if (value == null || value.trim().isEmpty) {
                     return 'Category name cannot be empty';
@@ -289,6 +290,7 @@ class _PresetCategoryAddDialog extends HookConsumerWidget {
                 decoration: const InputDecoration(
                   hintText: 'Description (optional)',
                 ),
+                maxLength: 100,
               ),
             ),
           ],
