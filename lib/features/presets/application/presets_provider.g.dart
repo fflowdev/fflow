@@ -9,53 +9,39 @@ part of 'presets_provider.dart';
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
 
-@ProviderFor(watchPresets)
-final watchPresetsProvider = WatchPresetsFamily._();
+@ProviderFor(PresetsNotifier)
+final presetsProvider = PresetsNotifierFamily._();
 
-final class WatchPresetsProvider
-    extends
-        $FunctionalProvider<
-          AsyncValue<Iterable<Preset>>,
-          Iterable<Preset>,
-          Stream<Iterable<Preset>>
-        >
-    with $FutureModifier<Iterable<Preset>>, $StreamProvider<Iterable<Preset>> {
-  WatchPresetsProvider._({
-    required WatchPresetsFamily super.from,
+final class PresetsNotifierProvider
+    extends $StreamNotifierProvider<PresetsNotifier, Iterable<Preset>> {
+  PresetsNotifierProvider._({
+    required PresetsNotifierFamily super.from,
     required PresetsQueryArguments super.argument,
   }) : super(
          retry: null,
-         name: r'watchPresetsProvider',
+         name: r'presetsProvider',
          isAutoDispose: true,
          dependencies: null,
          $allTransitiveDependencies: null,
        );
 
   @override
-  String debugGetCreateSourceHash() => _$watchPresetsHash();
+  String debugGetCreateSourceHash() => _$presetsNotifierHash();
 
   @override
   String toString() {
-    return r'watchPresetsProvider'
+    return r'presetsProvider'
         ''
         '($argument)';
   }
 
   @$internal
   @override
-  $StreamProviderElement<Iterable<Preset>> $createElement(
-    $ProviderPointer pointer,
-  ) => $StreamProviderElement(pointer);
-
-  @override
-  Stream<Iterable<Preset>> create(Ref ref) {
-    final argument = this.argument as PresetsQueryArguments;
-    return watchPresets(ref, argument);
-  }
+  PresetsNotifier create() => PresetsNotifier();
 
   @override
   bool operator ==(Object other) {
-    return other is WatchPresetsProvider && other.argument == argument;
+    return other is PresetsNotifierProvider && other.argument == argument;
   }
 
   @override
@@ -64,26 +50,51 @@ final class WatchPresetsProvider
   }
 }
 
-String _$watchPresetsHash() => r'affa0412e97127a7f1b29b9e8f6115dbda56ce75';
+String _$presetsNotifierHash() => r'12fcbf84a95e0d7d9f402e41e5bb477e148f13c6';
 
-final class WatchPresetsFamily extends $Family
+final class PresetsNotifierFamily extends $Family
     with
-        $FunctionalFamilyOverride<
+        $ClassFamilyOverride<
+          PresetsNotifier,
+          AsyncValue<Iterable<Preset>>,
+          Iterable<Preset>,
           Stream<Iterable<Preset>>,
           PresetsQueryArguments
         > {
-  WatchPresetsFamily._()
+  PresetsNotifierFamily._()
     : super(
         retry: null,
-        name: r'watchPresetsProvider',
+        name: r'presetsProvider',
         dependencies: null,
         $allTransitiveDependencies: null,
         isAutoDispose: true,
       );
 
-  WatchPresetsProvider call(PresetsQueryArguments args) =>
-      WatchPresetsProvider._(argument: args, from: this);
+  PresetsNotifierProvider call(PresetsQueryArguments args) =>
+      PresetsNotifierProvider._(argument: args, from: this);
 
   @override
-  String toString() => r'watchPresetsProvider';
+  String toString() => r'presetsProvider';
+}
+
+abstract class _$PresetsNotifier extends $StreamNotifier<Iterable<Preset>> {
+  late final _$args = ref.$arg as PresetsQueryArguments;
+  PresetsQueryArguments get args => _$args;
+
+  Stream<Iterable<Preset>> build(PresetsQueryArguments args);
+  @$mustCallSuper
+  @override
+  void runBuild() {
+    final ref =
+        this.ref as $Ref<AsyncValue<Iterable<Preset>>, Iterable<Preset>>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<AsyncValue<Iterable<Preset>>, Iterable<Preset>>,
+              AsyncValue<Iterable<Preset>>,
+              Object?,
+              Object?
+            >;
+    element.handleCreate(ref, () => build(_$args));
+  }
 }

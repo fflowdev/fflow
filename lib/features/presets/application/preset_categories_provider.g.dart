@@ -9,20 +9,16 @@ part of 'preset_categories_provider.dart';
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
 
-@ProviderFor(presetCategories)
-final presetCategoriesProvider = PresetCategoriesProvider._();
+@ProviderFor(PresetCategoriesNotifier)
+final presetCategoriesProvider = PresetCategoriesNotifierProvider._();
 
-final class PresetCategoriesProvider
+final class PresetCategoriesNotifierProvider
     extends
-        $FunctionalProvider<
-          AsyncValue<List<PresetCategory>>,
-          List<PresetCategory>,
-          FutureOr<List<PresetCategory>>
-        >
-    with
-        $FutureModifier<List<PresetCategory>>,
-        $FutureProvider<List<PresetCategory>> {
-  PresetCategoriesProvider._()
+        $StreamNotifierProvider<
+          PresetCategoriesNotifier,
+          Iterable<PresetCategory>
+        > {
+  PresetCategoriesNotifierProvider._()
     : super(
         from: null,
         argument: null,
@@ -34,18 +30,39 @@ final class PresetCategoriesProvider
       );
 
   @override
-  String debugGetCreateSourceHash() => _$presetCategoriesHash();
+  String debugGetCreateSourceHash() => _$presetCategoriesNotifierHash();
 
   @$internal
   @override
-  $FutureProviderElement<List<PresetCategory>> $createElement(
-    $ProviderPointer pointer,
-  ) => $FutureProviderElement(pointer);
-
-  @override
-  FutureOr<List<PresetCategory>> create(Ref ref) {
-    return presetCategories(ref);
-  }
+  PresetCategoriesNotifier create() => PresetCategoriesNotifier();
 }
 
-String _$presetCategoriesHash() => r'051669e858222147195ae01b747968cac4093949';
+String _$presetCategoriesNotifierHash() =>
+    r'ceee03e453e34213d6dc8721ea44cbafcd50916a';
+
+abstract class _$PresetCategoriesNotifier
+    extends $StreamNotifier<Iterable<PresetCategory>> {
+  Stream<Iterable<PresetCategory>> build();
+  @$mustCallSuper
+  @override
+  void runBuild() {
+    final ref =
+        this.ref
+            as $Ref<
+              AsyncValue<Iterable<PresetCategory>>,
+              Iterable<PresetCategory>
+            >;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<
+                AsyncValue<Iterable<PresetCategory>>,
+                Iterable<PresetCategory>
+              >,
+              AsyncValue<Iterable<PresetCategory>>,
+              Object?,
+              Object?
+            >;
+    element.handleCreate(ref, build);
+  }
+}

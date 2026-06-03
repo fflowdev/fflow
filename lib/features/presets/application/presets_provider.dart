@@ -6,15 +6,32 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'presets_provider.g.dart';
 
 @riverpod
-Stream<Iterable<Preset>> watchPresets(
-  Ref ref,
-  PresetsQueryArguments args,
-) {
-  final repo = ref.watch(presetsRepositoryProvider);
-  return repo.watchByCategoryAndKeyword(
-    category: args.category?.name,
-    keyword: args.queryName,
-  );
+class PresetsNotifier extends _$PresetsNotifier {
+  @override
+  Stream<Iterable<Preset>> build(
+    PresetsQueryArguments args,
+  ) {
+    final repo = ref.watch(presetsRepositoryProvider);
+    return repo.watchByCategoryAndKeyword(
+      category: args.category?.name,
+      keyword: args.queryName,
+    );
+  }
+
+  Future<void> addPreset(Preset preset) {
+    final repo = ref.read(presetsRepositoryProvider);
+    return repo.insert(preset);
+  }
+
+  Future<void> updatePreset(Preset preset) {
+    final repo = ref.read(presetsRepositoryProvider);
+    return repo.update(preset);
+  }
+
+  Future<void> deletePreset(Preset preset) {
+    final repo = ref.read(presetsRepositoryProvider);
+    return repo.delete(preset);
+  }
 }
 
 // @riverpod
