@@ -80,6 +80,7 @@ class PresetDialog extends HookConsumerWidget {
                 },
               ),
               const Gap(16),
+              // TODO(Noo6): Validate FFmpeg arguments
               TextField(
                 controller: argumentsController,
                 decoration: const InputDecoration(
