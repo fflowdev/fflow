@@ -13,7 +13,7 @@ class FfmpegCliArgumentParser {
     r'''(-[a-zA-Z0-9_:]+)(?:\s+(?!-[a-zA-Z])("[^"]*"|\'[^\']*\'|\S+))?''',
   );
 
-  List<CliArg> parse(String input) {
+  Iterable<CliArg> parse(String input) {
     final matches = _regex.allMatches(input);
     return matches.map((match) {
       var key = match.group(1)!;
@@ -25,6 +25,6 @@ class FfmpegCliArgumentParser {
           .group(2)
           ?.replaceAll(RegExp(r'''^["\']|["\']$'''), '');
       return CliArg(name: key, value: value);
-    }).toList();
+    });
   }
 }
