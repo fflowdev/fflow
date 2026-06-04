@@ -46,6 +46,7 @@ class PresetListItem extends ConsumerWidget {
         ),
       ),
       subtitle: Row(
+        spacing: 8,
         children: const FfmpegCliArgumentParser()
             .parse(preset.ffmpegArguments)
             .map(
