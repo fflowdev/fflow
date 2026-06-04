@@ -9,16 +9,20 @@ part of 'preset_categories_provider.dart';
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
 
-@ProviderFor(PresetCategoriesNotifier)
-final presetCategoriesProvider = PresetCategoriesNotifierProvider._();
+@ProviderFor(presetCategories)
+final presetCategoriesProvider = PresetCategoriesProvider._();
 
-final class PresetCategoriesNotifierProvider
+final class PresetCategoriesProvider
     extends
-        $StreamNotifierProvider<
-          PresetCategoriesNotifier,
-          Iterable<PresetCategory>
-        > {
-  PresetCategoriesNotifierProvider._()
+        $FunctionalProvider<
+          AsyncValue<Iterable<PresetCategory>>,
+          Iterable<PresetCategory>,
+          Stream<Iterable<PresetCategory>>
+        >
+    with
+        $FutureModifier<Iterable<PresetCategory>>,
+        $StreamProvider<Iterable<PresetCategory>> {
+  PresetCategoriesProvider._()
     : super(
         from: null,
         argument: null,
@@ -30,39 +34,18 @@ final class PresetCategoriesNotifierProvider
       );
 
   @override
-  String debugGetCreateSourceHash() => _$presetCategoriesNotifierHash();
+  String debugGetCreateSourceHash() => _$presetCategoriesHash();
 
   @$internal
   @override
-  PresetCategoriesNotifier create() => PresetCategoriesNotifier();
-}
+  $StreamProviderElement<Iterable<PresetCategory>> $createElement(
+    $ProviderPointer pointer,
+  ) => $StreamProviderElement(pointer);
 
-String _$presetCategoriesNotifierHash() =>
-    r'ceee03e453e34213d6dc8721ea44cbafcd50916a';
-
-abstract class _$PresetCategoriesNotifier
-    extends $StreamNotifier<Iterable<PresetCategory>> {
-  Stream<Iterable<PresetCategory>> build();
-  @$mustCallSuper
   @override
-  void runBuild() {
-    final ref =
-        this.ref
-            as $Ref<
-              AsyncValue<Iterable<PresetCategory>>,
-              Iterable<PresetCategory>
-            >;
-    final element =
-        ref.element
-            as $ClassProviderElement<
-              AnyNotifier<
-                AsyncValue<Iterable<PresetCategory>>,
-                Iterable<PresetCategory>
-              >,
-              AsyncValue<Iterable<PresetCategory>>,
-              Object?,
-              Object?
-            >;
-    element.handleCreate(ref, build);
+  Stream<Iterable<PresetCategory>> create(Ref ref) {
+    return presetCategories(ref);
   }
 }
+
+String _$presetCategoriesHash() => r'779deab2f4a8c608d1742c1eed658412c84c0c6b';

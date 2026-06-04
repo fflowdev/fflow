@@ -1,7 +1,8 @@
 import 'package:fflow/core/router/presentation/shell_route_scaffold.dart';
 import 'package:fflow/features/presets/application/preset_categories_provider.dart';
-import 'package:fflow/features/presets/application/presets_provider.dart';
+import 'package:fflow/features/presets/application/preset_category_repository_provider.dart';
 import 'package:fflow/features/presets/application/presets_query_arguments_provider.dart';
+import 'package:fflow/features/presets/application/presets_query_provider.dart';
 import 'package:fflow/features/presets/domain/preset.dart';
 import 'package:fflow/features/presets/domain/preset_category.dart';
 import 'package:fflow/features/presets/presentation/preset_dialog.dart';
@@ -56,7 +57,7 @@ class PresetsPage extends HookConsumerWidget {
             child: Consumer(
               builder: (context, ref, child) {
                 final args = ref.watch(presetsQueryArgumentsProvider);
-                final presets = ref.watch(presetsProvider(args));
+                final presets = ref.watch(presetsQueryProvider(args));
                 return switch (presets) {
                   AsyncLoading() => const Center(
                     child: CircularProgressIndicator(),
@@ -116,9 +117,7 @@ class _FliterChips extends HookConsumerWidget {
         categoryName: category.name,
       ).show(context);
       if (confirm ?? false) {
-        await ref
-            .read(presetCategoriesProvider.notifier)
-            .deleteCategory(category);
+        await ref.read(presetCategoryRepositoryProvider).delete(category);
       }
     }
 
@@ -130,8 +129,8 @@ class _FliterChips extends HookConsumerWidget {
       if (name.trim().isEmpty) return;
 
       await ref
-          .read(presetCategoriesProvider.notifier)
-          .addCategory(
+          .read(presetCategoryRepositoryProvider)
+          .insert(
             PresetCategory(name.trim(), description: description?.trim()),
           );
     }

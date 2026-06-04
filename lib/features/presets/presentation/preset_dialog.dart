@@ -1,5 +1,5 @@
 import 'package:fflow/features/presets/application/preset_categories_provider.dart';
-import 'package:fflow/features/presets/data/presets_repository.dart';
+import 'package:fflow/features/presets/application/presets_repository.dart';
 import 'package:fflow/features/presets/domain/preset.dart';
 import 'package:fflow/features/presets/domain/preset_category.dart';
 import 'package:flutter/material.dart';
@@ -60,8 +60,10 @@ class PresetDialog extends HookConsumerWidget {
                   final categories = ref.watch(presetCategoriesProvider).value;
                   return DropdownButtonFormField<PresetCategory>(
                     initialValue: selectedCategory.value,
-                    decoration: const InputDecoration(
-                      labelText: 'Category',
+                    decoration: InputDecoration(
+                      labelText: preset?.category == null
+                          ? 'Category'
+                          : 'Category: ${preset!.category!.name}',
                     ),
                     items: categories?.map((category) {
                       return DropdownMenuItem(

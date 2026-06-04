@@ -3,9 +3,6 @@ import 'package:fflow/features/presets/data/presets_dao.dart';
 import 'package:fflow/features/presets/domain/preset.dart';
 import 'package:fflow/features/presets/domain/preset_category.dart';
 import 'package:fflow/features/presets/domain/presets_table.dart';
-import 'package:riverpod_annotation/riverpod_annotation.dart';
-
-part 'presets_repository.g.dart';
 
 class PresetsRepository
     extends DatabaseRepository<PresetsDao, Presets, PresetData, Preset> {
@@ -47,6 +44,3 @@ class PresetsRepository
     return data.map((dataList) => dataList.map(toBusinessObject));
   }
 }
-
-@riverpod
-PresetsRepository presetsRepository(Ref ref) => PresetsRepository();
