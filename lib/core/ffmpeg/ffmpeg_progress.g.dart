@@ -11,8 +11,8 @@ _FFmpegProgress _$FFmpegProgressFromJson(Map<String, dynamic> json) =>
       frame: const IntConverter().fromJson(json['frame']),
       fps: const DoubleConverter().fromJson(json['fps']),
       bitrate: json['bitrate'] as String?,
-      totalSize: const IntConverter().fromJson(json['totalSize']),
-      outTimeMs: const IntConverter().fromJson(json['outTimeMs']),
+      totalSize: const IntConverter().fromJson(json['total_size']),
+      outTimeMs: const IntConverter().fromJson(json['out_time_ms']),
       speed: json['speed'] as String?,
       progress: json['progress'] as String?,
     );
@@ -22,8 +22,8 @@ Map<String, dynamic> _$FFmpegProgressToJson(_FFmpegProgress instance) =>
       'frame': const IntConverter().toJson(instance.frame),
       'fps': const DoubleConverter().toJson(instance.fps),
       'bitrate': instance.bitrate,
-      'totalSize': const IntConverter().toJson(instance.totalSize),
-      'outTimeMs': const IntConverter().toJson(instance.outTimeMs),
+      'total_size': const IntConverter().toJson(instance.totalSize),
+      'out_time_ms': const IntConverter().toJson(instance.outTimeMs),
       'speed': instance.speed,
       'progress': instance.progress,
     };

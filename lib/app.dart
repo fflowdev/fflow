@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:dynamic_color/dynamic_color.dart';
@@ -70,7 +71,10 @@ class MyHomePage extends HookConsumerWidget {
     final outputFileName = useTextEditingController(text: 'output.mp4');
     final runner = useState<FfmpegRunner?>(null);
     useEffect(() {
-      return runner.value?.dispose;
+      final currentRunner = runner.value;
+      return () {
+        unawaited(currentRunner?.dispose() ?? Future<void>.value());
+      };
     }, [runner.value]);
 
     Future<void> selectFFmpeg() async {
@@ -109,24 +113,27 @@ class MyHomePage extends HookConsumerWidget {
     );
 
     Future<void> startProcessing() async {
-      if (!enabled) return;
+      if (!enabled || runner.value != null) return;
       var runner1 = runner.value;
       runner1 = runner.value = FfmpegRunner(
         FfmpegCommand.simple(
           ffmpegPath: ffmpegPath.value,
           inputs: [FfmpegInput.asset(inputFile.value!.path)],
-          args: [
-            const CliArg(name: 'progress', value: 'pipe:1'),
-            const CliArg(name: 'y'),
-          ],
+          args: [const CliArg(name: 'y')],
           outputFilepath: '${outputPath.value!}/${outputFileName.text.trim()}',
         ),
       );
-      await runner1.run();
+      try {
+        await runner1.run();
+      } finally {
+        if (runner.value == runner1) {
+          runner.value = null;
+        }
+      }
     }
 
     Future<void> stopProcessing() async {
-      runner.value?.stop();
+      await runner.value?.stop();
       runner.value = null;
     }
 
@@ -168,6 +175,7 @@ class MyHomePage extends HookConsumerWidget {
               child: const Text('Stop Processing'),
             ),
             StreamBuilder(
+              initialData: runner.value?.latestProgress,
               stream: runner.value?.progressStream,
               builder: (context, snapshot) {
                 if (snapshot.hasData) {

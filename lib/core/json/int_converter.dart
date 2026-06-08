@@ -5,6 +5,9 @@ class IntConverter extends JsonConverter<int?, dynamic> {
 
   @override
   int? fromJson(dynamic json) {
+    if (json == null) {
+      return null;
+    }
     if (json is int) {
       return json;
     } else if (json is String) {

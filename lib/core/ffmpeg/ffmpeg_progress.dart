@@ -19,16 +19,16 @@ abstract class FFmpegProgress with _$FFmpegProgress {
     required int? totalSize, // bytes
     required int? outTimeMs,
     required String? speed,
-    required String? progress, // continue 或 end
+    required String? progress, // continue or end
   }) = _FFmpegProgress;
 
   const FFmpegProgress._();
 
   factory FFmpegProgress.fromJson(Json json) => _$FFmpegProgressFromJson(json);
 
-  /// Parse the FFmpeg output line into an FFmpegProgress instance.
+  /// Parse FFmpeg `-progress` output into an [FFmpegProgress] instance.
   ///
-  /// output example:
+  /// Example:
   /// frame=120
   /// fps=25.2
   /// stream_0_0_q=28.0
@@ -48,14 +48,14 @@ abstract class FFmpegProgress with _$FFmpegProgress {
         .where((line) => line.isNotEmpty);
 
     (String, String) splitKeyValue(String line) {
-      final parts = line.split('=');
+      final separatorIndex = line.indexOf('=');
 
-      final key = parts.firstOrNull?.trim();
-      final value = parts.elementAtOrNull(1)?.trim() ?? '';
-
-      if (key == null || key.isEmpty) {
+      if (separatorIndex <= 0) {
         throw FormatException('Invalid FFmpeg output line: $line');
       }
+
+      final key = line.substring(0, separatorIndex).trim();
+      final value = line.substring(separatorIndex + 1).trim();
 
       return (key, value);
     }
@@ -70,5 +70,5 @@ abstract class FFmpegProgress with _$FFmpegProgress {
   }
 
   Duration? get outTime =>
-      outTimeMs != null ? Duration(milliseconds: outTimeMs!) : null;
+      outTimeMs != null ? Duration(microseconds: outTimeMs!) : null;
 }

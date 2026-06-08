@@ -10,6 +10,13 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 void main() async {
   await runZonedGuarded(
     () async {
+      FlutterError.onError = (FlutterErrorDetails details) {
+        logger.e(
+          'Uncaught Flutter error',
+          error: details.exception,
+          stackTrace: details.stack,
+        );
+      };
       WidgetsFlutterBinding.ensureInitialized();
 
       await storage.initialize();

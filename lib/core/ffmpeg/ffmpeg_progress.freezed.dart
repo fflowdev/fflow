@@ -214,7 +214,7 @@ return $default(_that.frame,_that.fps,_that.bitrate,_that.totalSize,_that.outTim
 
 /// @nodoc
 
-@JsonSerializable(converters: [IntConverter(), DoubleConverter()])
+@JsonSerializable(converters: [IntConverter(), DoubleConverter()], fieldRename: FieldRename.snake)
 class _FFmpegProgress extends FFmpegProgress {
   const _FFmpegProgress({required this.frame, required this.fps, required this.bitrate, required this.totalSize, required this.outTimeMs, required this.speed, required this.progress}): super._();
   factory _FFmpegProgress.fromJson(Map<String, dynamic> json) => _$FFmpegProgressFromJson(json);

@@ -5,6 +5,9 @@ class DoubleConverter extends JsonConverter<double?, dynamic> {
 
   @override
   double? fromJson(dynamic json) {
+    if (json == null) {
+      return null;
+    }
     if (json is double) {
       return json;
     } else if (json is String) {
