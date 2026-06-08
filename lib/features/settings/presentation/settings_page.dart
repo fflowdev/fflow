@@ -5,8 +5,8 @@ import 'package:fflow/core/router/presentation/shell_route_scaffold.dart';
 import 'package:fflow/core/settings/app_settings.dart';
 import 'package:fflow/core/theme/extentions/settings_page_theme.dart';
 import 'package:fflow/core/utils/logger.dart';
-import 'package:fflow/features/settings/application/ffmpeg_version_output_provider.dart';
 import 'package:fflow/core/widgets/app_dialog.dart';
+import 'package:fflow/features/settings/application/ffmpeg_version_output_provider.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -172,6 +172,42 @@ class SettingsPage extends HookConsumerWidget {
             ],
           ),
           _ListTileGroup(
+            name: 'Queue',
+            listTiles: [
+              _ListTile.preset(
+                icon: Icons.queue_outlined,
+                title: 'Max concurrent tasks',
+                subtitle:
+                    'Choose how many FFmpeg tasks can run at the same time.',
+                trailing: Consumer(
+                  builder: (context, ref, child) {
+                    final maxConcurrentTasks = ref.watch(
+                      appSettingsProvider.select(
+                        (state) => state.maxConcurrentTasks,
+                      ),
+                    );
+                    return SegmentedButton<int>(
+                      showSelectedIcon: false,
+                      segments: const [
+                        ButtonSegment(value: 1, label: Text('1')),
+                        ButtonSegment(value: 2, label: Text('2')),
+                        ButtonSegment(value: 3, label: Text('3')),
+                        ButtonSegment(value: 4, label: Text('4')),
+                      ],
+                      selected: {maxConcurrentTasks},
+                      onSelectionChanged: (selection) {
+                        if (selection.isEmpty) return;
+                        ref
+                            .read(appSettingsProvider.notifier)
+                            .updateMaxConcurrentTasks(selection.first);
+                      },
+                    );
+                  },
+                ),
+              ),
+            ],
+          ),
+          _ListTileGroup(
             name: 'FFmpeg Configuration',
             listTiles: [
               _ListTile.custom(
@@ -286,9 +322,9 @@ class _ListTileBuilder extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: switch (listTile) {
             _CustomListTile() => listTile.child,
-            _PresetListTile() => Row(
-              children: [
-                DecoratedBox(
+            _PresetListTile() => LayoutBuilder(
+              builder: (context, constraints) {
+                final icon = DecoratedBox(
                   decoration: BoxDecoration(
                     color: tileStyle.iconBackgroundColor,
                     shape: BoxShape.circle,
@@ -301,9 +337,8 @@ class _ListTileBuilder extends StatelessWidget {
                       color: tileStyle.iconColor,
                     ),
                   ),
-                ),
-                const Gap(16),
-                Column(
+                );
+                final textContent = Column(
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -317,10 +352,42 @@ class _ListTileBuilder extends StatelessWidget {
                         style: tileStyle.subtitleTextStyle,
                       ),
                   ],
-                ),
-                const Spacer(),
-                ?listTile.trailing,
-              ],
+                );
+                final trailing = listTile.trailing;
+                final compact = trailing != null && constraints.maxWidth < 760;
+
+                if (compact) {
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          icon,
+                          const Gap(16),
+                          Expanded(child: textContent),
+                        ],
+                      ),
+                      const Gap(16),
+                      Align(
+                        alignment: Alignment.centerRight,
+                        child: trailing,
+                      ),
+                    ],
+                  );
+                }
+
+                return Row(
+                  children: [
+                    icon,
+                    const Gap(16),
+                    Expanded(child: textContent),
+                    if (trailing != null) ...[
+                      const Gap(16),
+                      Flexible(flex: 0, child: trailing),
+                    ],
+                  ],
+                );
+              },
             ),
           },
         ),

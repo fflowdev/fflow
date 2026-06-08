@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$AppSettings {
 
- String? get ffmpegPath; String? get ffprobePath; String? get outputDiretoryPath; ThemeSettings get themeSettings;
+ String? get ffmpegPath; String? get ffprobePath; String? get outputDiretoryPath; int get maxConcurrentTasks; ThemeSettings get themeSettings;
 /// Create a copy of AppSettings
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -28,16 +28,16 @@ $AppSettingsCopyWith<AppSettings> get copyWith => _$AppSettingsCopyWithImpl<AppS
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is AppSettings&&(identical(other.ffmpegPath, ffmpegPath) || other.ffmpegPath == ffmpegPath)&&(identical(other.ffprobePath, ffprobePath) || other.ffprobePath == ffprobePath)&&(identical(other.outputDiretoryPath, outputDiretoryPath) || other.outputDiretoryPath == outputDiretoryPath)&&(identical(other.themeSettings, themeSettings) || other.themeSettings == themeSettings));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is AppSettings&&(identical(other.ffmpegPath, ffmpegPath) || other.ffmpegPath == ffmpegPath)&&(identical(other.ffprobePath, ffprobePath) || other.ffprobePath == ffprobePath)&&(identical(other.outputDiretoryPath, outputDiretoryPath) || other.outputDiretoryPath == outputDiretoryPath)&&(identical(other.maxConcurrentTasks, maxConcurrentTasks) || other.maxConcurrentTasks == maxConcurrentTasks)&&(identical(other.themeSettings, themeSettings) || other.themeSettings == themeSettings));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,ffmpegPath,ffprobePath,outputDiretoryPath,themeSettings);
+int get hashCode => Object.hash(runtimeType,ffmpegPath,ffprobePath,outputDiretoryPath,maxConcurrentTasks,themeSettings);
 
 @override
 String toString() {
-  return 'AppSettings(ffmpegPath: $ffmpegPath, ffprobePath: $ffprobePath, outputDiretoryPath: $outputDiretoryPath, themeSettings: $themeSettings)';
+  return 'AppSettings(ffmpegPath: $ffmpegPath, ffprobePath: $ffprobePath, outputDiretoryPath: $outputDiretoryPath, maxConcurrentTasks: $maxConcurrentTasks, themeSettings: $themeSettings)';
 }
 
 
@@ -48,7 +48,7 @@ abstract mixin class $AppSettingsCopyWith<$Res>  {
   factory $AppSettingsCopyWith(AppSettings value, $Res Function(AppSettings) _then) = _$AppSettingsCopyWithImpl;
 @useResult
 $Res call({
- String? ffmpegPath, String? ffprobePath, String? outputDiretoryPath, ThemeSettings themeSettings
+ String? ffmpegPath, String? ffprobePath, String? outputDiretoryPath, int maxConcurrentTasks, ThemeSettings themeSettings
 });
 
 
@@ -65,12 +65,13 @@ class _$AppSettingsCopyWithImpl<$Res>
 
 /// Create a copy of AppSettings
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? ffmpegPath = freezed,Object? ffprobePath = freezed,Object? outputDiretoryPath = freezed,Object? themeSettings = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? ffmpegPath = freezed,Object? ffprobePath = freezed,Object? outputDiretoryPath = freezed,Object? maxConcurrentTasks = null,Object? themeSettings = null,}) {
   return _then(_self.copyWith(
 ffmpegPath: freezed == ffmpegPath ? _self.ffmpegPath : ffmpegPath // ignore: cast_nullable_to_non_nullable
 as String?,ffprobePath: freezed == ffprobePath ? _self.ffprobePath : ffprobePath // ignore: cast_nullable_to_non_nullable
 as String?,outputDiretoryPath: freezed == outputDiretoryPath ? _self.outputDiretoryPath : outputDiretoryPath // ignore: cast_nullable_to_non_nullable
-as String?,themeSettings: null == themeSettings ? _self.themeSettings : themeSettings // ignore: cast_nullable_to_non_nullable
+as String?,maxConcurrentTasks: null == maxConcurrentTasks ? _self.maxConcurrentTasks : maxConcurrentTasks // ignore: cast_nullable_to_non_nullable
+as int,themeSettings: null == themeSettings ? _self.themeSettings : themeSettings // ignore: cast_nullable_to_non_nullable
 as ThemeSettings,
   ));
 }
@@ -165,10 +166,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String? ffmpegPath,  String? ffprobePath,  String? outputDiretoryPath,  ThemeSettings themeSettings)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String? ffmpegPath,  String? ffprobePath,  String? outputDiretoryPath,  int maxConcurrentTasks,  ThemeSettings themeSettings)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _AppSettings() when $default != null:
-return $default(_that.ffmpegPath,_that.ffprobePath,_that.outputDiretoryPath,_that.themeSettings);case _:
+return $default(_that.ffmpegPath,_that.ffprobePath,_that.outputDiretoryPath,_that.maxConcurrentTasks,_that.themeSettings);case _:
   return orElse();
 
 }
@@ -186,10 +187,10 @@ return $default(_that.ffmpegPath,_that.ffprobePath,_that.outputDiretoryPath,_tha
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String? ffmpegPath,  String? ffprobePath,  String? outputDiretoryPath,  ThemeSettings themeSettings)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String? ffmpegPath,  String? ffprobePath,  String? outputDiretoryPath,  int maxConcurrentTasks,  ThemeSettings themeSettings)  $default,) {final _that = this;
 switch (_that) {
 case _AppSettings():
-return $default(_that.ffmpegPath,_that.ffprobePath,_that.outputDiretoryPath,_that.themeSettings);case _:
+return $default(_that.ffmpegPath,_that.ffprobePath,_that.outputDiretoryPath,_that.maxConcurrentTasks,_that.themeSettings);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -206,10 +207,10 @@ return $default(_that.ffmpegPath,_that.ffprobePath,_that.outputDiretoryPath,_tha
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String? ffmpegPath,  String? ffprobePath,  String? outputDiretoryPath,  ThemeSettings themeSettings)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String? ffmpegPath,  String? ffprobePath,  String? outputDiretoryPath,  int maxConcurrentTasks,  ThemeSettings themeSettings)?  $default,) {final _that = this;
 switch (_that) {
 case _AppSettings() when $default != null:
-return $default(_that.ffmpegPath,_that.ffprobePath,_that.outputDiretoryPath,_that.themeSettings);case _:
+return $default(_that.ffmpegPath,_that.ffprobePath,_that.outputDiretoryPath,_that.maxConcurrentTasks,_that.themeSettings);case _:
   return null;
 
 }
@@ -221,12 +222,13 @@ return $default(_that.ffmpegPath,_that.ffprobePath,_that.outputDiretoryPath,_tha
 @JsonSerializable()
 
 class _AppSettings implements AppSettings {
-  const _AppSettings({required this.ffmpegPath, required this.ffprobePath, required this.outputDiretoryPath, required this.themeSettings});
+  const _AppSettings({required this.ffmpegPath, required this.ffprobePath, required this.outputDiretoryPath, this.maxConcurrentTasks = 1, required this.themeSettings});
   factory _AppSettings.fromJson(Map<String, dynamic> json) => _$AppSettingsFromJson(json);
 
 @override final  String? ffmpegPath;
 @override final  String? ffprobePath;
 @override final  String? outputDiretoryPath;
+@override@JsonKey() final  int maxConcurrentTasks;
 @override final  ThemeSettings themeSettings;
 
 /// Create a copy of AppSettings
@@ -242,16 +244,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _AppSettings&&(identical(other.ffmpegPath, ffmpegPath) || other.ffmpegPath == ffmpegPath)&&(identical(other.ffprobePath, ffprobePath) || other.ffprobePath == ffprobePath)&&(identical(other.outputDiretoryPath, outputDiretoryPath) || other.outputDiretoryPath == outputDiretoryPath)&&(identical(other.themeSettings, themeSettings) || other.themeSettings == themeSettings));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _AppSettings&&(identical(other.ffmpegPath, ffmpegPath) || other.ffmpegPath == ffmpegPath)&&(identical(other.ffprobePath, ffprobePath) || other.ffprobePath == ffprobePath)&&(identical(other.outputDiretoryPath, outputDiretoryPath) || other.outputDiretoryPath == outputDiretoryPath)&&(identical(other.maxConcurrentTasks, maxConcurrentTasks) || other.maxConcurrentTasks == maxConcurrentTasks)&&(identical(other.themeSettings, themeSettings) || other.themeSettings == themeSettings));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,ffmpegPath,ffprobePath,outputDiretoryPath,themeSettings);
+int get hashCode => Object.hash(runtimeType,ffmpegPath,ffprobePath,outputDiretoryPath,maxConcurrentTasks,themeSettings);
 
 @override
 String toString() {
-  return 'AppSettings(ffmpegPath: $ffmpegPath, ffprobePath: $ffprobePath, outputDiretoryPath: $outputDiretoryPath, themeSettings: $themeSettings)';
+  return 'AppSettings(ffmpegPath: $ffmpegPath, ffprobePath: $ffprobePath, outputDiretoryPath: $outputDiretoryPath, maxConcurrentTasks: $maxConcurrentTasks, themeSettings: $themeSettings)';
 }
 
 
@@ -262,7 +264,7 @@ abstract mixin class _$AppSettingsCopyWith<$Res> implements $AppSettingsCopyWith
   factory _$AppSettingsCopyWith(_AppSettings value, $Res Function(_AppSettings) _then) = __$AppSettingsCopyWithImpl;
 @override @useResult
 $Res call({
- String? ffmpegPath, String? ffprobePath, String? outputDiretoryPath, ThemeSettings themeSettings
+ String? ffmpegPath, String? ffprobePath, String? outputDiretoryPath, int maxConcurrentTasks, ThemeSettings themeSettings
 });
 
 
@@ -279,12 +281,13 @@ class __$AppSettingsCopyWithImpl<$Res>
 
 /// Create a copy of AppSettings
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? ffmpegPath = freezed,Object? ffprobePath = freezed,Object? outputDiretoryPath = freezed,Object? themeSettings = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? ffmpegPath = freezed,Object? ffprobePath = freezed,Object? outputDiretoryPath = freezed,Object? maxConcurrentTasks = null,Object? themeSettings = null,}) {
   return _then(_AppSettings(
 ffmpegPath: freezed == ffmpegPath ? _self.ffmpegPath : ffmpegPath // ignore: cast_nullable_to_non_nullable
 as String?,ffprobePath: freezed == ffprobePath ? _self.ffprobePath : ffprobePath // ignore: cast_nullable_to_non_nullable
 as String?,outputDiretoryPath: freezed == outputDiretoryPath ? _self.outputDiretoryPath : outputDiretoryPath // ignore: cast_nullable_to_non_nullable
-as String?,themeSettings: null == themeSettings ? _self.themeSettings : themeSettings // ignore: cast_nullable_to_non_nullable
+as String?,maxConcurrentTasks: null == maxConcurrentTasks ? _self.maxConcurrentTasks : maxConcurrentTasks // ignore: cast_nullable_to_non_nullable
+as int,themeSettings: null == themeSettings ? _self.themeSettings : themeSettings // ignore: cast_nullable_to_non_nullable
 as ThemeSettings,
   ));
 }

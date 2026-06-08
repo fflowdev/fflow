@@ -16,6 +16,7 @@ abstract class AppSettings with _$AppSettings {
     required String? ffmpegPath,
     required String? ffprobePath,
     required String? outputDiretoryPath,
+    @Default(1) int maxConcurrentTasks,
     required ThemeSettings themeSettings,
   }) = _AppSettings;
 
@@ -85,6 +86,17 @@ class AppSettingsNotifier extends _$AppSettingsNotifier {
 
   void updateOutputDirectoryPath(String? path) {
     state = state.copyWith(outputDiretoryPath: path);
+  }
+
+  void updateMaxConcurrentTasks(int value) {
+    if (value < 1) {
+      throw ArgumentError.value(
+        value,
+        'value',
+        'maxConcurrentTasks must be greater than 0',
+      );
+    }
+    state = state.copyWith(maxConcurrentTasks: value);
   }
 
   void toggleUsePlatformSeedColor() {
