@@ -67,49 +67,56 @@ class _Navigation extends StatelessWidget {
       color: navTheme.backgroundColor,
       child: SizedBox(
         width: 287,
-        child: Column(
+        child: Row(
           children: [
-            const _NavigationHeader(),
-            Flexible(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 12,
-                  vertical: 16,
-                ),
-                child: Column(
-                  spacing: 4,
-                  children: List.generate(
-                    destinations.length,
-                    (index) {
-                      final destination = destinations[index];
-                      return switch (destination) {
-                        HomeShellNavigationDestinationItem(
-                          :final icon,
-                          :final label,
-                          :final route,
-                        ) =>
-                          _NavigationDestination(
-                            selected:
-                                GoRouterState.of(context).uri.path ==
-                                route.location,
-                            onTap: () => route.go(context),
-                            icon: icon,
-                            label: label,
-                          ),
-                        HomeShellNavigationDestinationDivider() =>
-                          const Divider(
-                            color: Color(0xFFC4C6D0),
-                            thickness: 1,
-                            indent: 16,
-                            endIndent: 16,
-                            height: 8,
-                          ),
-                      };
-                    },
+            Expanded(
+              child: Column(
+                children: [
+                  const _NavigationHeader(),
+                  Flexible(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 16,
+                      ),
+                      child: Column(
+                        spacing: 4,
+                        children: List.generate(
+                          destinations.length,
+                          (index) {
+                            final destination = destinations[index];
+                            return switch (destination) {
+                              HomeShellNavigationDestinationItem(
+                                :final icon,
+                                :final label,
+                                :final route,
+                              ) =>
+                                _NavigationDestination(
+                                  selected:
+                                      GoRouterState.of(context).uri.path ==
+                                      route.location,
+                                  onTap: () => route.go(context),
+                                  icon: icon,
+                                  label: label,
+                                ),
+                              HomeShellNavigationDestinationDivider() =>
+                                const Divider(
+                                  color: Color(0xFFC4C6D0),
+                                  thickness: 1,
+                                  indent: 16,
+                                  endIndent: 16,
+                                  height: 8,
+                                ),
+                            };
+                          },
+                        ),
+                      ),
+                    ),
                   ),
-                ),
+                ],
               ),
             ),
+            const VerticalDivider(width: 1),
           ],
         ),
       ),
