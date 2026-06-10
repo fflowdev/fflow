@@ -7,18 +7,16 @@ import 'package:fflow/core/ffmpeg/ffmpeg_task.dart';
 import 'package:fflow/core/settings/app_settings.dart';
 import 'package:ffmpeg_cli/ffmpeg_cli.dart' hide Stream;
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-final queueProcessControllerFactoryProvider =
-    Provider<FfmpegProcessControllerFactory>(
-      (ref) => defaultFfmpegProcessControllerFactory,
-    );
+part 'ffmpeg_queue_controller.g.dart';
 
-final ffmpegQueueControllerProvider =
-    NotifierProvider<FfmpegQueueController, FfmpegQueueState>(
-      FfmpegQueueController.new,
-    );
+@riverpod
+FfmpegProcessControllerFactory queueProcessControllerFactory(Ref ref) =>
+    defaultFfmpegProcessControllerFactory;
 
-class FfmpegQueueController extends Notifier<FfmpegQueueState> {
+@riverpod
+class FfmpegQueueController extends _$FfmpegQueueController {
   late final FfmpegQueueManager _manager;
 
   @override
@@ -35,24 +33,24 @@ class FfmpegQueueController extends Notifier<FfmpegQueueState> {
       state = nextState;
     });
 
-    ref.listen<int>(
-      appSettingsProvider.select((state) => state.maxConcurrentTasks),
-      (previous, next) {
-        if (previous == next) {
-          return;
-        }
-        manager.setMaxConcurrentTasks(next);
-      },
-    );
-
-    ref.onDispose(
-      () => unawaited(
-        Future.wait([
-          subscription.cancel(),
-          manager.dispose(forceStop: true),
-        ]),
-      ),
-    );
+    ref
+      ..listen<int>(
+        appSettingsProvider.select((state) => state.maxConcurrentTasks),
+        (previous, next) {
+          if (previous == next) {
+            return;
+          }
+          manager.setMaxConcurrentTasks(next);
+        },
+      )
+      ..onDispose(
+        () => unawaited(
+          Future.wait([
+            subscription.cancel(),
+            manager.dispose(forceStop: true),
+          ]),
+        ),
+      );
 
     return manager.state;
   }
