@@ -1,10 +1,15 @@
+import 'dart:async';
+
 import 'package:fflow/core/router/application/router.dart';
 import 'package:fflow/core/router/domain/home_shell_navigation_destination.dart';
 import 'package:fflow/core/theme/extentions/navigation_theme.dart';
 import 'package:fflow/core/theme/theme_extension.dart';
+import 'package:fflow/shared/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
+import 'package:window_manager/window_manager.dart';
+import 'package:windows_titlebar/windows_titlebar.dart';
 
 class HomeShell extends StatelessWidget {
   const HomeShell({super.key, required this.child});
@@ -41,7 +46,8 @@ class HomeShell extends StatelessWidget {
       ),
     ];
 
-    return Scaffold(
+    Widget widget = Scaffold(
+      appBar: useCustomWindowTitleBar ? const _WindowTitleBar() : null,
       body: Row(
         children: [
           const _Navigation(destinations: destinations),
@@ -49,6 +55,12 @@ class HomeShell extends StatelessWidget {
         ],
       ),
     );
+
+    if (useCustomWindowTitleBar) {
+      widget = VirtualWindowFrame(child: widget);
+    }
+
+    return widget;
   }
 }
 
@@ -70,70 +82,47 @@ class _Navigation extends StatelessWidget {
         child: Row(
           children: [
             Expanded(
-              child: Column(
-                children: [
-                  const _NavigationHeader(),
-                  Flexible(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 12,
-                        vertical: 16,
-                      ),
-                      child: Column(
-                        spacing: 4,
-                        children: List.generate(
-                          destinations.length,
-                          (index) {
-                            final destination = destinations[index];
-                            return switch (destination) {
-                              HomeShellNavigationDestinationItem(
-                                :final icon,
-                                :final label,
-                                :final route,
-                              ) =>
-                                _NavigationDestination(
-                                  selected:
-                                      GoRouterState.of(context).uri.path ==
-                                      route.location,
-                                  onTap: () => route.go(context),
-                                  icon: icon,
-                                  label: label,
-                                ),
-                              HomeShellNavigationDestinationDivider() =>
-                                const Divider(
-                                  color: Color(0xFFC4C6D0),
-                                  thickness: 1,
-                                  indent: 16,
-                                  endIndent: 16,
-                                  height: 8,
-                                ),
-                            };
-                          },
-                        ),
-                      ),
-                    ),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 16,
+                ),
+                child: Column(
+                  spacing: 8,
+                  children: List.generate(
+                    destinations.length,
+                    (index) {
+                      final destination = destinations[index];
+                      return switch (destination) {
+                        HomeShellNavigationDestinationItem(
+                          :final icon,
+                          :final label,
+                          :final route,
+                        ) =>
+                          _NavigationDestination(
+                            selected:
+                                GoRouterState.of(context).uri.path ==
+                                route.location,
+                            onTap: () => route.go(context),
+                            icon: icon,
+                            label: label,
+                          ),
+                        HomeShellNavigationDestinationDivider() =>
+                          const Divider(
+                            thickness: 1,
+                            indent: 16,
+                            endIndent: 16,
+                            height: 8,
+                          ),
+                      };
+                    },
                   ),
-                ],
+                ),
               ),
             ),
             const VerticalDivider(width: 1),
           ],
         ),
-      ),
-    );
-  }
-}
-
-class _NavigationHeader extends StatelessWidget {
-  const _NavigationHeader();
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
-      child: Text(
-        'Header',
-        style: context.textTheme.titleSmall,
       ),
     );
   }
@@ -188,6 +177,122 @@ class _NavigationDestination extends StatelessWidget {
               ],
             ),
           ),
+        ),
+      ),
+    );
+  }
+}
+
+class _WindowTitleBar extends StatefulWidget implements PreferredSizeWidget {
+  const _WindowTitleBar();
+
+  @override
+  State<_WindowTitleBar> createState() => _WindowTitleBarState();
+
+  @override
+  Size get preferredSize => const Size.fromHeight(kWindowTitleBarHeight);
+}
+
+class _WindowTitleBarState extends State<_WindowTitleBar> with WindowListener {
+  late final ValueNotifier<FutureOr<bool>> _isMaximized;
+
+  @override
+  void initState() {
+    super.initState();
+    windowManager.addListener(this);
+    _isMaximized = ValueNotifier(windowManager.isMaximized());
+  }
+
+  @override
+  void dispose() {
+    windowManager.removeListener(this);
+    super.dispose();
+  }
+
+  @override
+  void onWindowMaximize() {
+    _isMaximized.value = true;
+  }
+
+  @override
+  void onWindowUnmaximize() {
+    _isMaximized.value = false;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final buttonColor = switch (Theme.brightnessOf(context)) {
+      Brightness.light => const WindowButtonColor.light(),
+      Brightness.dark => const WindowButtonColor.dark(),
+    };
+    final closeButtonColor = switch (Theme.brightnessOf(context)) {
+      Brightness.light => const WindowButtonColor.closeLight(),
+      Brightness.dark => const WindowButtonColor.closeDark(),
+    };
+    const animated = true;
+
+    return SizedBox.fromSize(
+      size: widget.preferredSize,
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          color: context.navigationTheme.backgroundColor,
+          border: Border(
+            bottom: BorderSide(color: context.theme.dividerColor),
+          ),
+        ),
+        child: Row(
+          children: [
+            const Expanded(
+              child: DragToMoveArea(
+                child: Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 16),
+                  child: Text('FFlow'),
+                ),
+              ),
+            ),
+
+            WindowButton.minimize(
+              buttonColor: buttonColor,
+              animated: animated,
+              onTap: windowManager.minimize,
+            ),
+            ValueListenableBuilder(
+              valueListenable: _isMaximized,
+              builder: (context, isMaximized, child) {
+                Widget builder({required bool isMaximized}) {
+                  return isMaximized
+                      ? WindowButton.unmaximize(
+                          buttonColor: buttonColor,
+                          animated: animated,
+                          onTap: windowManager.unmaximize,
+                        )
+                      : WindowButton.maximize(
+                          buttonColor: buttonColor,
+                          animated: animated,
+                          onTap: windowManager.maximize,
+                        );
+                }
+
+                final isMaximizedFutureOr = isMaximized;
+                if (isMaximizedFutureOr is bool) {
+                  return builder(isMaximized: isMaximizedFutureOr);
+                }
+
+                return FutureBuilder(
+                  future: isMaximizedFutureOr,
+                  builder: (context, snapshot) {
+                    final isMaximized = snapshot.data ?? false;
+                    return builder(isMaximized: isMaximized);
+                  },
+                );
+              },
+            ),
+            WindowButton.close(
+              buttonColor: closeButtonColor,
+              animated: animated,
+              onTap: windowManager.close,
+            ),
+          ],
         ),
       ),
     );
