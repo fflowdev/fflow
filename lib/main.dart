@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:fflow/app.dart';
 import 'package:fflow/core/provider/root_provider_container.dart';
-import 'package:fflow/core/storage/storage.dart';
 import 'package:fflow/core/utils/logger.dart';
 import 'package:fflow/shared/settings/theme/application/theme_settings_provider.dart';
 import 'package:flutter/material.dart';
@@ -36,8 +35,6 @@ void main() async {
 }
 
 Future<void> _initializePresists() async {
-  await storage.initialize();
-
   // Preload theme settings to ensure the app has the necessary data before
   // building the UI.
   await rootProviderContainer.read(themeSettingsProvider.notifier).preload();

@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
 
 import 'package:drift/drift.dart';
 import 'package:drift_flutter/drift_flutter.dart';
@@ -9,7 +8,6 @@ import 'package:fflow/core/utils/logger.dart';
 import 'package:fflow/features/presets/domain/preset_categories_table.dart';
 import 'package:fflow/features/presets/domain/presets_table.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 part 'storage.g.dart';
 
@@ -33,26 +31,7 @@ class AppDatabase extends _$AppDatabase {
 }
 
 class Storage {
-  SharedPreferences? __prefs;
   late final _database = AppDatabase();
-
-  SharedPreferences get _prefs {
-    assert(
-      __prefs != null,
-      'Storage not initialized. Call initialize() first.',
-    );
-    return __prefs!;
-  }
-
-  Future<void> initialize() async {
-    __prefs = await SharedPreferences.getInstance();
-  }
-
-  Future<bool> clearSharedPreferences() async {
-    final result = await _prefs.clear();
-    logger.i('SharedPreferences cleared: $result');
-    return result;
-  }
 
   Future<List<int>> clearDatabase() async {
     final result = await _database.transaction(() async {
@@ -74,50 +53,6 @@ class RepositoryJsonHandler<T> {
 
   final T Function(Json json) fromJson;
   final Json Function(T data) toJson;
-}
-
-abstract class SharePreferencesRepository<T> {
-  const SharePreferencesRepository(this.key, {this.jsonHandler});
-
-  final String key;
-  final RepositoryJsonHandler<T>? jsonHandler;
-
-  SharedPreferences get _prefs => storage._prefs;
-
-  Future<bool> clear() => _prefs.remove(key);
-
-  Future<bool> save(T item) {
-    if (jsonHandler != null) {
-      return _prefs.setString(key, jsonEncode(jsonHandler!.toJson(item)));
-    }
-
-    return switch (item) {
-      int() => _prefs.setInt(key, item),
-      double() => _prefs.setDouble(key, item),
-      bool() => _prefs.setBool(key, item),
-      List<String>() => _prefs.setStringList(key, item),
-      String() => _prefs.setString(key, item),
-      _ => throw UnsupportedError('Unsupported type: ${item.runtimeType}'),
-    };
-  }
-
-  T? get() {
-    if (jsonHandler != null) {
-      final jsonString = _prefs.getString(key);
-      if (jsonString == null) return null;
-      final json = jsonDecode(jsonString);
-      if (json is! Json) return null;
-      return jsonHandler!.fromJson(json);
-    }
-    final data = _prefs.get(key);
-    if (data == null) return null;
-    if (data is! T) {
-      throw UnsupportedError(
-        'Expected type $T but got ${data.runtimeType} for key $key',
-      );
-    }
-    return data as T;
-  }
 }
 
 abstract class DatabaseDao<T extends Table, DO extends DataClass>

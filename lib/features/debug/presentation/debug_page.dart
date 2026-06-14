@@ -16,10 +16,6 @@ class DebugPage extends HookConsumerWidget {
       body: ListView(
         children: [
           ListTile(
-            title: const Text('Clear Shared Preferences'),
-            onTap: storage.clearSharedPreferences,
-          ),
-          ListTile(
             title: const Text('Clear Database'),
             onTap: storage.clearDatabase,
           ),
