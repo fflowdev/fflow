@@ -93,7 +93,7 @@ final class FfmpegQueueControllerProvider
 }
 
 String _$ffmpegQueueControllerHash() =>
-    r'493a9fe1fb254778e5e51a6e2bec4d22e770241b';
+    r'ab569c122d66d91929a3f404be98fa7a6d3bfa88';
 
 abstract class _$FfmpegQueueController extends $Notifier<FfmpegQueueState> {
   FfmpegQueueState build();

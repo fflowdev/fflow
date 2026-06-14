@@ -6,9 +6,10 @@ import 'package:fflow/core/ffmpeg/ffmpeg_queue_manager.dart';
 import 'package:fflow/core/ffmpeg/ffmpeg_runner.dart';
 import 'package:fflow/core/ffmpeg/ffmpeg_task.dart';
 import 'package:fflow/core/router/presentation/shell_route_scaffold.dart';
-import 'package:fflow/core/settings/app_settings.dart';
 import 'package:fflow/core/theme/theme_extension.dart';
 import 'package:fflow/features/queue/application/ffmpeg_queue_controller.dart';
+import 'package:fflow/shared/settings/ffmpeg/application/ffmpeg_settings_provider.dart';
+import 'package:fflow/shared/settings/output/application/output_preferences_provider.dart';
 import 'package:ffmpeg_cli/ffmpeg_cli.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
@@ -667,15 +668,14 @@ class _CreateQueueTaskDialog extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final appSettings = ref.watch(appSettingsProvider);
     final formKey = useMemoized(GlobalKey<FormState>.new);
     final labelController = useTextEditingController();
     final ffmpegPathController = useTextEditingController(
-      text: appSettings.ffmpegPath ?? '',
+      text: ref.read(ffmpegSettingsProvider).ffmpegExecutablePath,
     );
     final inputPathController = useTextEditingController();
     final outputDirectoryController = useTextEditingController(
-      text: appSettings.outputDiretoryPath ?? '',
+      text: ref.read(outputPreferencesProvider).outputDirectoryPath,
     );
     final outputFileNameController = useTextEditingController(
       text: 'output.mp4',

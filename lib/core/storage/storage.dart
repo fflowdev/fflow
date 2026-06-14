@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:drift/drift.dart';
 import 'package:drift_flutter/drift_flutter.dart';
 import 'package:fflow/core/json/json_typedef.dart';
+import 'package:fflow/core/settings/domain/app_settings_table.dart';
 import 'package:fflow/core/utils/logger.dart';
 import 'package:fflow/features/presets/domain/preset_categories_table.dart';
 import 'package:fflow/features/presets/domain/presets_table.dart';
@@ -14,7 +15,7 @@ part 'storage.g.dart';
 
 final storage = Storage();
 
-@DriftDatabase(tables: [Presets, PresetCategories])
+@DriftDatabase(tables: [Presets, PresetCategories, AppSettingsTable])
 class AppDatabase extends _$AppDatabase {
   AppDatabase([QueryExecutor? executor]) : super(executor ?? _openConnection());
 

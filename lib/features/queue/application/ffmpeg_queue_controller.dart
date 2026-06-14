@@ -4,7 +4,7 @@ import 'package:fflow/core/ffmpeg/ffmpeg_process_controller.dart';
 import 'package:fflow/core/ffmpeg/ffmpeg_queue_manager.dart';
 import 'package:fflow/core/ffmpeg/ffmpeg_runner.dart';
 import 'package:fflow/core/ffmpeg/ffmpeg_task.dart';
-import 'package:fflow/core/settings/app_settings.dart';
+import 'package:fflow/shared/settings/queue/application/queue_settings_provider.dart';
 import 'package:ffmpeg_cli/ffmpeg_cli.dart' hide Stream;
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -22,7 +22,7 @@ class FfmpegQueueController extends _$FfmpegQueueController {
   @override
   FfmpegQueueState build() {
     final initialMaxConcurrentTasks = ref.read(
-      appSettingsProvider.select((state) => state.maxConcurrentTasks),
+      queueSettingsProvider.select((state) => state.maxConcurrentTasks),
     );
     final manager = _manager = FfmpegQueueManager(
       controllerFactory: ref.watch(queueProcessControllerFactoryProvider),
@@ -35,7 +35,7 @@ class FfmpegQueueController extends _$FfmpegQueueController {
 
     ref
       ..listen<int>(
-        appSettingsProvider.select((state) => state.maxConcurrentTasks),
+        queueSettingsProvider.select((state) => state.maxConcurrentTasks),
         (previous, next) {
           if (previous == next) {
             return;
@@ -98,7 +98,7 @@ class FfmpegQueueController extends _$FfmpegQueueController {
   void clearFinishedTasks() => _manager.clearFinishedTasks();
 
   void setMaxConcurrentTasks(int value) {
-    ref.read(appSettingsProvider.notifier).updateMaxConcurrentTasks(value);
+    ref.read(queueSettingsProvider.notifier).setMaxConcurrentTasks(value);
   }
 
   String? _normalizedOrNull(String? value) {

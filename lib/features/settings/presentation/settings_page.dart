@@ -2,11 +2,14 @@ import 'dart:io';
 
 import 'package:fflow/core/extension/iterable_extension.dart';
 import 'package:fflow/core/router/presentation/shell_route_scaffold.dart';
-import 'package:fflow/core/settings/app_settings.dart';
 import 'package:fflow/core/theme/extentions/settings_page_theme.dart';
 import 'package:fflow/core/utils/logger.dart';
 import 'package:fflow/core/widgets/app_dialog.dart';
 import 'package:fflow/features/settings/application/ffmpeg_version_output_provider.dart';
+import 'package:fflow/shared/settings/ffmpeg/application/ffmpeg_settings_provider.dart';
+import 'package:fflow/shared/settings/output/application/output_preferences_provider.dart';
+import 'package:fflow/shared/settings/queue/application/queue_settings_provider.dart';
+import 'package:fflow/shared/settings/theme/application/theme_settings_provider.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -21,18 +24,17 @@ class SettingsPage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final appSettings = ref.read(appSettingsProvider);
     final ffmpegPathTextEditingController = useTextEditingController(
-      text: appSettings.ffmpegPath,
+      text: ref.read(ffmpegSettingsProvider).ffmpegExecutablePath,
     );
     final outputDiretoryPathTextEditingController = useTextEditingController(
-      text: appSettings.outputDiretoryPath,
+      text: ref.read(outputPreferencesProvider).outputDirectoryPath,
     );
     useEffect(() {
       void listener() {
         ref
-            .read(appSettingsProvider.notifier)
-            .updateFFmpegPath(ffmpegPathTextEditingController.text);
+            .read(ffmpegSettingsProvider.notifier)
+            .setFfmpegPath(ffmpegPathTextEditingController.text);
       }
 
       ffmpegPathTextEditingController.addListener(listener);
@@ -41,8 +43,8 @@ class SettingsPage extends HookConsumerWidget {
     useEffect(() {
       void listener() {
         ref
-            .read(appSettingsProvider.notifier)
-            .updateOutputDirectoryPath(
+            .read(outputPreferencesProvider.notifier)
+            .setOutputDirectoryPath(
               outputDiretoryPathTextEditingController.text,
             );
       }
@@ -138,9 +140,7 @@ class SettingsPage extends HookConsumerWidget {
                 trailing: Consumer(
                   builder: (context, ref, child) {
                     final currentThemeMode = ref.watch(
-                      appSettingsProvider.select(
-                        (state) => state.themeSettings.themeMode,
-                      ),
+                      themeSettingsProvider.select((state) => state.themeMode),
                     );
                     return SegmentedButton(
                       showSelectedIcon: false,
@@ -159,8 +159,8 @@ class SettingsPage extends HookConsumerWidget {
                       onSelectionChanged: (newSelection) {
                         if (newSelection.isEmpty) return;
                         ref
-                            .read(appSettingsProvider.notifier)
-                            .updateThemeMode(newSelection.first);
+                            .read(themeSettingsProvider.notifier)
+                            .setThemeMode(newSelection.first);
                       },
                       selected: {
                         currentThemeMode,
@@ -182,7 +182,7 @@ class SettingsPage extends HookConsumerWidget {
                 trailing: Consumer(
                   builder: (context, ref, child) {
                     final maxConcurrentTasks = ref.watch(
-                      appSettingsProvider.select(
+                      queueSettingsProvider.select(
                         (state) => state.maxConcurrentTasks,
                       ),
                     );
@@ -198,8 +198,8 @@ class SettingsPage extends HookConsumerWidget {
                       onSelectionChanged: (selection) {
                         if (selection.isEmpty) return;
                         ref
-                            .read(appSettingsProvider.notifier)
-                            .updateMaxConcurrentTasks(selection.first);
+                            .read(queueSettingsProvider.notifier)
+                            .setMaxConcurrentTasks(selection.first);
                       },
                     );
                   },
