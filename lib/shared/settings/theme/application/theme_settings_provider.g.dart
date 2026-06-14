@@ -42,7 +42,7 @@ final class ThemeSettingsNotifierProvider
 }
 
 String _$themeSettingsNotifierHash() =>
-    r'c89d8d89afcf65276edcb6de2adaa105c8d66e55';
+    r'dd23dea1fa921e6f4b1b4c27340c655fd70e7cbd';
 
 abstract class _$ThemeSettingsNotifier extends $Notifier<ThemeSettings> {
   ThemeSettings build();

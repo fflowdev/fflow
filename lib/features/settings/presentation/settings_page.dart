@@ -30,29 +30,7 @@ class SettingsPage extends HookConsumerWidget {
     final outputDiretoryPathTextEditingController = useTextEditingController(
       text: ref.read(outputPreferencesProvider).outputDirectoryPath,
     );
-    useEffect(() {
-      void listener() {
-        ref
-            .read(ffmpegSettingsProvider.notifier)
-            .setFfmpegPath(ffmpegPathTextEditingController.text);
-      }
 
-      ffmpegPathTextEditingController.addListener(listener);
-      return () => ffmpegPathTextEditingController.removeListener(listener);
-    }, [ffmpegPathTextEditingController]);
-    useEffect(() {
-      void listener() {
-        ref
-            .read(outputPreferencesProvider.notifier)
-            .setOutputDirectoryPath(
-              outputDiretoryPathTextEditingController.text,
-            );
-      }
-
-      outputDiretoryPathTextEditingController.addListener(listener);
-      return () =>
-          outputDiretoryPathTextEditingController.removeListener(listener);
-    }, [outputDiretoryPathTextEditingController]);
     Future<void> onTapPickFFmpegExecutable() async {
       final result = await FilePicker.pickFiles(
         allowedExtensions: Platform.isWindows ? ['exe'] : null,
@@ -218,6 +196,9 @@ class SettingsPage extends HookConsumerWidget {
                   children: [
                     TextField(
                       controller: ffmpegPathTextEditingController,
+                      onChanged: ref
+                          .read(ffmpegSettingsProvider.notifier)
+                          .setFfmpegPath,
                       decoration: InputDecoration(
                         labelText: 'FFmpeg Executable Path',
                         suffixIcon: IconButton(
@@ -253,6 +234,9 @@ class SettingsPage extends HookConsumerWidget {
               _ListTile.custom(
                 child: TextField(
                   controller: outputDiretoryPathTextEditingController,
+                  onChanged: ref
+                      .read(outputPreferencesProvider.notifier)
+                      .setOutputDirectoryPath,
                   decoration: InputDecoration(
                     labelText: 'Default Output Directory',
                     suffixIcon: IconButton(

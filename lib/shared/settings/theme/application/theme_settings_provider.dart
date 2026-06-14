@@ -24,8 +24,6 @@ class ThemeSettingsNotifier extends _$ThemeSettingsNotifier {
     return ref.watch(_themeSettingsProvider).value ?? ThemeSettings.def();
   }
 
-  Future<void> preload() => ref.read(_themeSettingsProvider.future);
-
   void setThemeMode(ThemeMode mode) {
     final newState = state.copyWith(themeMode: mode);
     ref.read(_themeSettingsProvider.notifier).setValue(newState);

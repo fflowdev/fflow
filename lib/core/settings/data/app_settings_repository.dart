@@ -21,7 +21,7 @@ class AppSettingsRepository
         ),
         toBusinessObject: (data) => AppSettingsKV(
           key: data.key,
-          value: data.value,
+          value: data.value.rawSqlValue,
         ),
       );
 

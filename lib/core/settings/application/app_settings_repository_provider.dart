@@ -3,5 +3,5 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'app_settings_repository_provider.g.dart';
 
-@riverpod
+@Riverpod(keepAlive: true)
 AppSettingsRepository appSettingsRepository(Ref ref) => AppSettingsRepository();

@@ -2,9 +2,9 @@ import 'dart:async';
 
 import 'package:fflow/app.dart';
 import 'package:fflow/core/provider/root_provider_container.dart';
+import 'package:fflow/core/settings/application/app_settings_provider.dart';
 import 'package:fflow/core/utils/logger.dart';
 import 'package:fflow/shared/constants.dart';
-import 'package:fflow/shared/settings/theme/application/theme_settings_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:window_manager/window_manager.dart';
@@ -38,9 +38,9 @@ void main() async {
 }
 
 Future<void> _initializePresists() async {
-  // Preload theme settings to ensure the app has the necessary data before
-  // building the UI.
-  await rootProviderContainer.read(themeSettingsProvider.notifier).preload();
+  // Preload settings before the app starts to ensure they're available
+  // immediately.
+  await rootProviderContainer.read(appPreloadSettingsProvider.future);
 }
 
 Future<void> _initializeWindow() async {

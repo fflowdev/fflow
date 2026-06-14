@@ -26,7 +26,7 @@ final class AppSettingsRepositoryProvider
         argument: null,
         retry: null,
         name: r'appSettingsRepositoryProvider',
-        isAutoDispose: true,
+        isAutoDispose: false,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
@@ -55,4 +55,4 @@ final class AppSettingsRepositoryProvider
 }
 
 String _$appSettingsRepositoryHash() =>
-    r'a5436ec00eb8b3a9b324c7876aa8407db932b595';
+    r'2ceed7e54f24b9b805f9557b5ca0afcc0c32b7ac';
