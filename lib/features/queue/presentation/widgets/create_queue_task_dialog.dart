@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:fflow/core/ffmpeg/ffmpeg_cli_argument_parser.dart';
-import 'package:fflow/core/theme/theme_extension.dart';
+import 'package:fflow/core/widgets/dialog_form_fields.dart';
 import 'package:fflow/features/queue/application/ffmpeg_queue_controller.dart';
 import 'package:fflow/shared/settings/ffmpeg/application/ffmpeg_settings_provider.dart';
 import 'package:fflow/shared/settings/output/application/output_preferences_provider.dart';
@@ -9,7 +9,6 @@ import 'package:ffmpeg_cli/ffmpeg_cli.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:gap/gap.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:path/path.dart';
 
@@ -281,44 +280,21 @@ class _Fields extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final childrenFormKey = useMemoized(GlobalKey<FormState>.new);
-    return FormField<void>(
+    final formKey = useMemoized(GlobalKey<FormState>.new);
+    return DialogFormFields<void>(
+      title: title,
       validator: (_) {
-        final validated = childrenFormKey.currentState?.validate() ?? false;
+        final validated = formKey.currentState?.validate() ?? false;
         return validated ? null : 'Please fix errors in this section.';
       },
-      builder: (field) {
-        var titleStyle = context.textTheme.titleMedium ?? const TextStyle();
-        if (field.hasError) {
-          titleStyle = titleStyle.copyWith(color: context.colorScheme.error);
-        }
-        return Form(
-          key: childrenFormKey,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Flexible(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8),
-                  child: DefaultTextStyle(
-                    style: titleStyle,
-                    child: title,
-                  ),
-                ),
-              ),
-              const Gap(12),
-              Flexible(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  spacing: 16,
-                  children: children,
-                ),
-              ),
-            ],
-          ),
-        );
-      },
+      child: Form(
+        key: formKey,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          spacing: 16,
+          children: children,
+        ),
+      ),
     );
   }
 }

@@ -33,63 +33,61 @@ class PresetDialog extends HookConsumerWidget {
 
     return AlertDialog(
       title: Text(isEditing ? 'Edit Preset' : 'New Preset'),
-      content: SizedBox(
-        width: 600,
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              TextField(
-                controller: nameController,
-                decoration: const InputDecoration(
-                  labelText: 'Name',
-                ),
+      constraints: const BoxConstraints.expand(width: 600),
+      content: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            TextField(
+              controller: nameController,
+              decoration: const InputDecoration(
+                labelText: 'Name',
               ),
-              const Gap(16),
-              TextField(
-                controller: descriptionController,
-                decoration: const InputDecoration(
-                  labelText: 'Description',
-                ),
-                maxLines: 2,
+            ),
+            const Gap(16),
+            TextField(
+              controller: descriptionController,
+              decoration: const InputDecoration(
+                labelText: 'Description',
               ),
-              const Gap(16),
-              Consumer(
-                builder: (context, ref, child) {
-                  final categories = ref.watch(presetCategoriesProvider).value;
-                  return DropdownButtonFormField<PresetCategory>(
-                    initialValue: selectedCategory.value,
-                    decoration: InputDecoration(
-                      labelText: preset?.category == null
-                          ? 'Category'
-                          : 'Category: ${preset!.category!.name}',
-                    ),
-                    items: categories?.map((category) {
-                      return DropdownMenuItem(
-                        value: category,
-                        child: Text(category.name),
-                      );
-                    }).toList(),
-                    onChanged: (value) {
-                      if (value != null) {
-                        selectedCategory.value = value;
-                      }
-                    },
-                  );
-                },
+              maxLines: 2,
+            ),
+            const Gap(16),
+            Consumer(
+              builder: (context, ref, child) {
+                final categories = ref.watch(presetCategoriesProvider).value;
+                return DropdownButtonFormField<PresetCategory>(
+                  initialValue: selectedCategory.value,
+                  decoration: InputDecoration(
+                    labelText: preset?.category == null
+                        ? 'Category'
+                        : 'Category: ${preset!.category!.name}',
+                  ),
+                  items: categories?.map((category) {
+                    return DropdownMenuItem(
+                      value: category,
+                      child: Text(category.name),
+                    );
+                  }).toList(),
+                  onChanged: (value) {
+                    if (value != null) {
+                      selectedCategory.value = value;
+                    }
+                  },
+                );
+              },
+            ),
+            const Gap(16),
+            // TODO(Noo6): Validate FFmpeg arguments
+            TextField(
+              controller: argumentsController,
+              decoration: const InputDecoration(
+                labelText: 'FFmpeg Arguments',
               ),
-              const Gap(16),
-              // TODO(Noo6): Validate FFmpeg arguments
-              TextField(
-                controller: argumentsController,
-                decoration: const InputDecoration(
-                  labelText: 'FFmpeg Arguments',
-                ),
-                maxLines: 4,
-              ),
-            ],
-          ),
+              maxLines: 4,
+            ),
+          ],
         ),
       ),
       actions: [
