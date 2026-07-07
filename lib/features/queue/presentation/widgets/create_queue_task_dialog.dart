@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 import 'package:fflow/core/ffmpeg/ffmpeg_cli_argument_parser.dart';
 import 'package:fflow/core/widgets/dialog_form_fields.dart';
+import 'package:fflow/core/widgets/scrollable_dialog.dart';
 import 'package:fflow/features/queue/application/ffmpeg_queue_controller.dart';
 import 'package:fflow/shared/settings/ffmpeg/application/ffmpeg_settings_provider.dart';
 import 'package:fflow/shared/settings/output/application/output_preferences_provider.dart';
@@ -117,137 +118,132 @@ class CreateQueueTaskDialog extends HookConsumerWidget {
       }
     }
 
-    return AlertDialog(
+    return ScrollableDialog(
       title: const Text('New Queue Task'),
-      constraints: const BoxConstraints.expand(width: 640),
-      contentPadding: EdgeInsets.zero,
       content: Form(
         key: formKey,
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(24),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            spacing: 24,
-            children: [
-              Flexible(
-                child: _Fields(
-                  title: const Text('Task'),
-                  children: [
-                    TextFormField(
-                      controller: labelController,
-                      decoration: const InputDecoration(
-                        labelText: 'Task label (Optional)',
-                      ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          spacing: 24,
+          children: [
+            Flexible(
+              child: _Fields(
+                title: const Text('Task'),
+                children: [
+                  TextFormField(
+                    controller: labelController,
+                    decoration: const InputDecoration(
+                      labelText: 'Task label (Optional)',
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
-              Flexible(
-                child: _Fields(
-                  title: const Text('FFmpeg'),
-                  children: [
-                    TextFormField(
-                      controller: ffmpegPathController,
-                      decoration: InputDecoration(
-                        labelText: 'FFmpeg executable path (Optional)',
-                        suffixIcon: IconButton(
-                          icon: const Icon(Icons.folder_open),
-                          onPressed: pickFfmpegExecutable,
-                        ),
+            ),
+            Flexible(
+              child: _Fields(
+                title: const Text('FFmpeg'),
+                children: [
+                  TextFormField(
+                    controller: ffmpegPathController,
+                    decoration: InputDecoration(
+                      labelText: 'FFmpeg executable path (Optional)',
+                      suffixIcon: IconButton(
+                        icon: const Icon(Icons.folder_open),
+                        onPressed: pickFfmpegExecutable,
                       ),
                     ),
-                    TextFormField(
-                      controller: extraArgsController,
-                      decoration: const InputDecoration(
-                        labelText: 'Additional FFmpeg arguments (Optional)',
-                      ),
-                      validator: (value) {
-                        final args = const FfmpegCliArgumentParser()
-                            .parse(value ?? '')
-                            .toList();
-                        for (final arg in args) {
-                          if (arg.name == 'progress' && arg.value != 'pipe:1') {
-                            return '''Do not override `-progress`. Queue tracking manages it.''';
-                          }
+                  ),
+                  TextFormField(
+                    controller: extraArgsController,
+                    decoration: const InputDecoration(
+                      labelText: 'Additional FFmpeg arguments (Optional)',
+                    ),
+                    validator: (value) {
+                      final args = const FfmpegCliArgumentParser()
+                          .parse(value ?? '')
+                          .toList();
+                      for (final arg in args) {
+                        if (arg.name == 'progress' && arg.value != 'pipe:1') {
+                          return '''Do not override `-progress`. Queue tracking manages it.''';
                         }
-                        return null;
-                      },
+                      }
+                      return null;
+                    },
+                  ),
+                  SwitchListTile(
+                    contentPadding: EdgeInsets.zero,
+                    title: const Text('Overwrite existing output'),
+                    subtitle: const Text(
+                      'Adds `-y` when it is not already present.',
                     ),
-                    SwitchListTile(
-                      contentPadding: EdgeInsets.zero,
-                      title: const Text('Overwrite existing output'),
-                      subtitle: const Text(
-                        'Adds `-y` when it is not already present.',
-                      ),
-                      value: overwriteOutput.value,
-                      onChanged: (value) {
-                        overwriteOutput.value = value;
-                      },
-                    ),
-                  ],
-                ),
+                    value: overwriteOutput.value,
+                    onChanged: (value) {
+                      overwriteOutput.value = value;
+                    },
+                  ),
+                ],
               ),
-              Flexible(
-                child: _Fields(
-                  title: const Text('Inputs'),
-                  children: [
-                    TextFormField(
-                      controller: inputPathController,
-                      decoration: InputDecoration(
-                        labelText: 'Input file',
-                        suffixIcon: IconButton(
-                          icon: const Icon(Icons.attach_file),
-                          onPressed: pickInputFile,
-                        ),
+            ),
+            Flexible(
+              child: _Fields(
+                title: const Text('Inputs'),
+                children: [
+                  TextFormField(
+                    controller: inputPathController,
+                    decoration: InputDecoration(
+                      labelText: 'Input file',
+                      suffixIcon: IconButton(
+                        icon: const Icon(Icons.attach_file),
+                        onPressed: pickInputFile,
                       ),
-                      validator: (value) {
-                        if (value == null || value.trim().isEmpty) {
-                          return 'Input file is required.';
-                        }
-                        return null;
-                      },
                     ),
-                  ],
-                ),
+                    validator: (value) {
+                      if (value == null || value.trim().isEmpty) {
+                        return 'Input file is required.';
+                      }
+                      return null;
+                    },
+                  ),
+                ],
               ),
-              Flexible(
-                child: _Fields(
-                  title: const Text('Output'),
-                  children: [
-                    TextFormField(
-                      controller: outputDirectoryController,
-                      decoration: InputDecoration(
-                        labelText: 'Output directory',
-                        suffixIcon: IconButton(
-                          icon: const Icon(Icons.folder_open),
-                          onPressed: pickOutputDirectory,
-                        ),
+            ),
+            Flexible(
+              child: _Fields(
+                title: const Text('Output'),
+                children: [
+                  TextFormField(
+                    controller: outputDirectoryController,
+                    decoration: InputDecoration(
+                      labelText: 'Output directory',
+                      suffixIcon: IconButton(
+                        icon: const Icon(Icons.folder_open),
+                        onPressed: pickOutputDirectory,
                       ),
-                      validator: (value) {
-                        if (value == null || value.trim().isEmpty) {
-                          return 'Output directory is required.';
-                        }
-                        return null;
-                      },
                     ),
-                    TextFormField(
-                      controller: outputFileNameController,
-                      decoration: const InputDecoration(
-                        labelText: 'Output filename',
-                        hintText: 'output.mp4',
-                      ),
-                      validator: (value) {
-                        if (value == null || value.trim().isEmpty) {
-                          return 'Output filename is required.';
-                        }
-                        return null;
-                      },
+                    validator: (value) {
+                      if (value == null || value.trim().isEmpty) {
+                        return 'Output directory is required.';
+                      }
+                      return null;
+                    },
+                  ),
+                  TextFormField(
+                    controller: outputFileNameController,
+                    decoration: const InputDecoration(
+                      labelText: 'Output filename',
+                      hintText: 'output.mp4',
                     ),
-                  ],
-                ),
+                    validator: (value) {
+                      if (value == null || value.trim().isEmpty) {
+                        return 'Output filename is required.';
+                      }
+                      return null;
+                    },
+                  ),
+                ],
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
       actions: [

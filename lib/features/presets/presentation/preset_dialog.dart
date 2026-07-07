@@ -1,3 +1,4 @@
+import 'package:fflow/core/widgets/scrollable_dialog.dart';
 import 'package:fflow/features/presets/application/preset_categories_provider.dart';
 import 'package:fflow/features/presets/application/presets_repository.dart';
 import 'package:fflow/features/presets/domain/preset.dart';
@@ -31,64 +32,61 @@ class PresetDialog extends HookConsumerWidget {
     );
     final selectedCategory = useValueNotifier<PresetCategory?>(null);
 
-    return AlertDialog(
+    return ScrollableDialog(
       title: Text(isEditing ? 'Edit Preset' : 'New Preset'),
-      constraints: const BoxConstraints.expand(width: 600),
-      content: SingleChildScrollView(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            TextField(
-              controller: nameController,
-              decoration: const InputDecoration(
-                labelText: 'Name',
-              ),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          TextField(
+            controller: nameController,
+            decoration: const InputDecoration(
+              labelText: 'Name',
             ),
-            const Gap(16),
-            TextField(
-              controller: descriptionController,
-              decoration: const InputDecoration(
-                labelText: 'Description',
-              ),
-              maxLines: 2,
+          ),
+          const Gap(16),
+          TextField(
+            controller: descriptionController,
+            decoration: const InputDecoration(
+              labelText: 'Description',
             ),
-            const Gap(16),
-            Consumer(
-              builder: (context, ref, child) {
-                final categories = ref.watch(presetCategoriesProvider).value;
-                return DropdownButtonFormField<PresetCategory>(
-                  initialValue: selectedCategory.value,
-                  decoration: InputDecoration(
-                    labelText: preset?.category == null
-                        ? 'Category'
-                        : 'Category: ${preset!.category!.name}',
-                  ),
-                  items: categories?.map((category) {
-                    return DropdownMenuItem(
-                      value: category,
-                      child: Text(category.name),
-                    );
-                  }).toList(),
-                  onChanged: (value) {
-                    if (value != null) {
-                      selectedCategory.value = value;
-                    }
-                  },
-                );
-              },
+            maxLines: 2,
+          ),
+          const Gap(16),
+          Consumer(
+            builder: (context, ref, child) {
+              final categories = ref.watch(presetCategoriesProvider).value;
+              return DropdownButtonFormField<PresetCategory>(
+                initialValue: selectedCategory.value,
+                decoration: InputDecoration(
+                  labelText: preset?.category == null
+                      ? 'Category'
+                      : 'Category: ${preset!.category!.name}',
+                ),
+                items: categories?.map((category) {
+                  return DropdownMenuItem(
+                    value: category,
+                    child: Text(category.name),
+                  );
+                }).toList(),
+                onChanged: (value) {
+                  if (value != null) {
+                    selectedCategory.value = value;
+                  }
+                },
+              );
+            },
+          ),
+          const Gap(16),
+          // TODO(Noo6): Validate FFmpeg arguments
+          TextField(
+            controller: argumentsController,
+            decoration: const InputDecoration(
+              labelText: 'FFmpeg Arguments',
             ),
-            const Gap(16),
-            // TODO(Noo6): Validate FFmpeg arguments
-            TextField(
-              controller: argumentsController,
-              decoration: const InputDecoration(
-                labelText: 'FFmpeg Arguments',
-              ),
-              maxLines: 4,
-            ),
-          ],
-        ),
+            maxLines: 4,
+          ),
+        ],
       ),
       actions: [
         TextButton(

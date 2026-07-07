@@ -4,7 +4,7 @@ import 'package:fflow/core/extension/iterable_extension.dart';
 import 'package:fflow/core/router/presentation/shell_route_scaffold.dart';
 import 'package:fflow/core/theme/extentions/settings_page_theme.dart';
 import 'package:fflow/core/utils/logger.dart';
-import 'package:fflow/core/widgets/app_dialog.dart';
+import 'package:fflow/core/widgets/scrollable_dialog.dart';
 import 'package:fflow/features/settings/application/ffmpeg_version_output_provider.dart';
 import 'package:fflow/shared/settings/ffmpeg/application/ffmpeg_settings_provider.dart';
 import 'package:fflow/shared/settings/output/application/output_preferences_provider.dart';
@@ -56,23 +56,23 @@ class SettingsPage extends HookConsumerWidget {
           .read(ffmpegVersionOutputProvider.notifier)
           .run(ffmpegPath);
       await asyncValue.when(
-        data: (result) async {
+        data: (result) {
           if (result == null) {
             logger.w(
               'FFmpeg version check result is null',
             );
           } else {
-            await AppDialog(
-              title: Text(
-                result.isSuccess
-                    ? 'FFmpeg Version Check Succeeded'
-                    : 'FFmpeg Version Check Failed',
+            return showDialog<void>(
+              context: context,
+              builder: (_) => ScrollableDialog(
+                title: Text(
+                  result.isSuccess
+                      ? 'FFmpeg Version Check Succeeded'
+                      : 'FFmpeg Version Check Failed',
+                ),
+                content: Text(result.output),
               ),
-              content: SingleChildScrollView(
-                child: Text(result.output),
-              ),
-              scrollable: true,
-            ).show<void>(context);
+            );
           }
         },
         error: (e, s) {
