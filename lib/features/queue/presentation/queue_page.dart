@@ -1,19 +1,14 @@
 import 'dart:async';
-import 'dart:io';
 
-import 'package:fflow/core/ffmpeg/ffmpeg_cli_argument_parser.dart';
 import 'package:fflow/core/ffmpeg/ffmpeg_queue_manager.dart';
 import 'package:fflow/core/ffmpeg/ffmpeg_runner.dart';
 import 'package:fflow/core/ffmpeg/ffmpeg_task.dart';
 import 'package:fflow/core/router/presentation/shell_route_scaffold.dart';
 import 'package:fflow/core/theme/theme_extension.dart';
 import 'package:fflow/features/queue/application/ffmpeg_queue_controller.dart';
-import 'package:fflow/shared/settings/ffmpeg/application/ffmpeg_settings_provider.dart';
-import 'package:fflow/shared/settings/output/application/output_preferences_provider.dart';
+import 'package:fflow/features/queue/presentation/widgets/create_queue_task_dialog.dart';
 import 'package:ffmpeg_cli/ffmpeg_cli.dart';
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:gap/gap.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
@@ -40,7 +35,7 @@ class QueuePage extends ConsumerWidget {
         const Gap(12),
         FilledButton.icon(
           onPressed: () async {
-            await const _CreateQueueTaskDialog().show(context);
+            await const CreateQueueTaskDialog().show(context);
           },
           icon: const Icon(Icons.add),
           label: const Text('New Task'),
@@ -638,7 +633,7 @@ class _EmptyQueueState extends StatelessWidget {
                         ),
                         FilledButton.icon(
                           onPressed: () async {
-                            await const _CreateQueueTaskDialog().show(context);
+                            await const CreateQueueTaskDialog().show(context);
                           },
                           icon: const Icon(Icons.add),
                           label: const Text('Create Task'),
@@ -652,243 +647,6 @@ class _EmptyQueueState extends StatelessWidget {
           ),
         );
       },
-    );
-  }
-}
-
-class _CreateQueueTaskDialog extends HookConsumerWidget {
-  const _CreateQueueTaskDialog();
-
-  Future<void> show(BuildContext context) {
-    return showDialog<void>(
-      context: context,
-      builder: (_) => const _CreateQueueTaskDialog(),
-    );
-  }
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final formKey = useMemoized(GlobalKey<FormState>.new);
-    final labelController = useTextEditingController();
-    final ffmpegPathController = useTextEditingController(
-      text: ref.read(ffmpegSettingsProvider).ffmpegExecutablePath,
-    );
-    final inputPathController = useTextEditingController();
-    final outputDirectoryController = useTextEditingController(
-      text: ref.read(outputPreferencesProvider).outputDirectoryPath,
-    );
-    final outputFileNameController = useTextEditingController(
-      text: 'output.mp4',
-    );
-    final extraArgsController = useTextEditingController();
-    final overwriteOutput = useState(true);
-    final isSubmitting = useState(false);
-
-    Future<void> pickFfmpegExecutable() async {
-      final result = await FilePicker.pickFiles(
-        allowedExtensions: Platform.isWindows ? ['exe'] : null,
-        type: Platform.isWindows ? FileType.custom : FileType.any,
-      );
-      final path = result?.files.single.path;
-      if (path != null) {
-        ffmpegPathController.text = path;
-      }
-    }
-
-    Future<void> pickInputFile() async {
-      final result = await FilePicker.pickFiles();
-      final path = result?.files.single.path;
-      if (path == null) {
-        return;
-      }
-
-      inputPathController.text = path;
-      if (outputFileNameController.text.trim() == 'output.mp4') {
-        outputFileNameController.text =
-            '${_basenameWithoutExtension(path)}.mp4';
-      }
-      if (labelController.text.trim().isEmpty) {
-        labelController.text = _basenameWithoutExtension(path);
-      }
-    }
-
-    Future<void> pickOutputDirectory() async {
-      final path = await FilePicker.getDirectoryPath();
-      if (path != null) {
-        outputDirectoryController.text = path;
-      }
-    }
-
-    Future<void> submit() async {
-      final valid = formKey.currentState?.validate() ?? false;
-      if (!valid || isSubmitting.value) {
-        return;
-      }
-
-      isSubmitting.value = true;
-      try {
-        final args = const FfmpegCliArgumentParser()
-            .parse(extraArgsController.text)
-            .toList(growable: true);
-        if (overwriteOutput.value && args.every((arg) => arg.name != 'y')) {
-          args.insert(0, const CliArg(name: 'y'));
-        }
-
-        final outputFilepath = _joinOutputPath(
-          outputDirectoryController.text.trim(),
-          outputFileNameController.text.trim(),
-        );
-
-        ref
-            .read(ffmpegQueueControllerProvider.notifier)
-            .enqueueSimpleTask(
-              ffmpegPath: ffmpegPathController.text,
-              inputPath: inputPathController.text.trim(),
-              outputFilepath: outputFilepath,
-              label: labelController.text,
-              args: args,
-            );
-
-        if (!context.mounted) {
-          return;
-        }
-        Navigator.of(context).pop();
-      } on Object catch (error) {
-        if (!context.mounted) {
-          return;
-        }
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(_formatError(error))),
-        );
-      } finally {
-        isSubmitting.value = false;
-      }
-    }
-
-    return AlertDialog(
-      title: const Text('New Queue Task'),
-      content: ConstrainedBox(
-        constraints: const BoxConstraints(maxWidth: 640),
-        child: Form(
-          key: formKey,
-          child: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              spacing: 16,
-              children: [
-                Text(
-                  'Build an `FfmpegCommand.simple` task. The queue manager '
-                  'will add progress tracking automatically.',
-                  style: context.textTheme.bodyMedium?.copyWith(
-                    color: context.colorScheme.onSurfaceVariant,
-                    height: 1.45,
-                  ),
-                ),
-                TextFormField(
-                  controller: labelController,
-                  decoration: const InputDecoration(
-                    labelText: 'Task label',
-                    hintText: 'Optional',
-                  ),
-                ),
-                TextFormField(
-                  controller: ffmpegPathController,
-                  decoration: InputDecoration(
-                    labelText: 'FFmpeg executable path',
-                    hintText: 'Optional, falls back to PATH',
-                    suffixIcon: IconButton(
-                      icon: const Icon(Icons.folder_open),
-                      onPressed: pickFfmpegExecutable,
-                    ),
-                  ),
-                ),
-                TextFormField(
-                  controller: inputPathController,
-                  decoration: InputDecoration(
-                    labelText: 'Input file',
-                    suffixIcon: IconButton(
-                      icon: const Icon(Icons.attach_file),
-                      onPressed: pickInputFile,
-                    ),
-                  ),
-                  validator: (value) {
-                    if (value == null || value.trim().isEmpty) {
-                      return 'Input file is required.';
-                    }
-                    return null;
-                  },
-                ),
-                TextFormField(
-                  controller: outputDirectoryController,
-                  decoration: InputDecoration(
-                    labelText: 'Output directory',
-                    suffixIcon: IconButton(
-                      icon: const Icon(Icons.folder_open),
-                      onPressed: pickOutputDirectory,
-                    ),
-                  ),
-                  validator: (value) {
-                    if (value == null || value.trim().isEmpty) {
-                      return 'Output directory is required.';
-                    }
-                    return null;
-                  },
-                ),
-                TextFormField(
-                  controller: outputFileNameController,
-                  decoration: const InputDecoration(
-                    labelText: 'Output filename',
-                    hintText: 'output.mp4',
-                  ),
-                  validator: (value) {
-                    if (value == null || value.trim().isEmpty) {
-                      return 'Output filename is required.';
-                    }
-                    return null;
-                  },
-                ),
-                TextFormField(
-                  controller: extraArgsController,
-                  decoration: const InputDecoration(
-                    labelText: 'Additional FFmpeg arguments',
-                    hintText: '-c:v libx264 -preset fast',
-                  ),
-                  validator: _validateAdditionalArgs,
-                ),
-                SwitchListTile.adaptive(
-                  contentPadding: EdgeInsets.zero,
-                  title: const Text('Overwrite existing output'),
-                  subtitle: const Text(
-                    'Adds `-y` when it is not already present.',
-                  ),
-                  value: overwriteOutput.value,
-                  onChanged: (value) {
-                    overwriteOutput.value = value;
-                  },
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-      actions: [
-        TextButton(
-          onPressed: isSubmitting.value
-              ? null
-              : () => Navigator.of(context).pop(),
-          child: const Text('Cancel'),
-        ),
-        FilledButton.icon(
-          onPressed: isSubmitting.value ? null : submit,
-          icon: isSubmitting.value
-              ? const SizedBox.square(
-                  dimension: 16,
-                  child: CircularProgressIndicator(strokeWidth: 2),
-                )
-              : const Icon(Icons.queue),
-          label: const Text('Enqueue'),
-        ),
-      ],
     );
   }
 }
@@ -973,16 +731,6 @@ Future<void> _runGuarded(
   }
 }
 
-String? _validateAdditionalArgs(String? value) {
-  final args = const FfmpegCliArgumentParser().parse(value ?? '').toList();
-  for (final arg in args) {
-    if (arg.name == 'progress' && arg.value != 'pipe:1') {
-      return 'Do not override `-progress`. Queue tracking manages it.';
-    }
-  }
-  return null;
-}
-
 String _describeInput(FfmpegInput input) {
   final args = input.args;
   if (args.length >= 2 && args.first == '-i') {
@@ -994,22 +742,6 @@ String _describeInput(FfmpegInput input) {
 String _outputFilename(String outputFilepath) {
   final normalized = outputFilepath.replaceAll(r'\', '/');
   return normalized.split('/').last;
-}
-
-String _basenameWithoutExtension(String path) {
-  final filename = _outputFilename(path);
-  final dotIndex = filename.lastIndexOf('.');
-  if (dotIndex <= 0) {
-    return filename;
-  }
-  return filename.substring(0, dotIndex);
-}
-
-String _joinOutputPath(String directoryPath, String fileName) {
-  if (directoryPath.endsWith(r'\') || directoryPath.endsWith('/')) {
-    return '$directoryPath$fileName';
-  }
-  return '$directoryPath${Platform.pathSeparator}$fileName';
 }
 
 String _formatDateTime(DateTime value) {
