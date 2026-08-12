@@ -1,16 +1,12 @@
-import 'dart:async';
-import 'dart:io';
-
 import 'package:dynamic_color/dynamic_color.dart';
-import 'package:fflow/core/ffmpeg/ffmpeg_runner.dart';
+import 'package:fflow/core/constants/app_constants.dart';
 import 'package:fflow/core/router/application/router.dart';
 import 'package:fflow/core/theme/app_theme.dart';
+import 'package:fflow/core/widgets/app_window_title_bar.dart';
 import 'package:fflow/features/settings/application/theme_settings_provider.dart';
-import 'package:ffmpeg_cli/ffmpeg_cli.dart';
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:window_manager/window_manager.dart';
 
 class MyApp extends ConsumerWidget {
   const MyApp({super.key});
@@ -50,142 +46,33 @@ class MyApp extends ConsumerWidget {
           darkTheme: appTheme.darkTheme,
           themeMode: themeSettings.themeMode,
           routerConfig: router,
+          builder: (context, child) => child == null
+              ? const SizedBox.shrink()
+              : kUseCustomWindowTitleBar
+              ? _VirtualWindowFrame(child: child)
+              : child,
         );
       },
     );
   }
 }
 
-class MyHomePage extends HookConsumerWidget {
-  const MyHomePage({super.key, required this.title});
+class _VirtualWindowFrame extends StatelessWidget {
+  const _VirtualWindowFrame({required this.child});
 
-  final String title;
+  final Widget child;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final ffmpegPath = useState<String?>(null);
-    final inputFile = useState<File?>(null);
-    final outputPath = useState<String?>(null);
-    final outputFileName = useTextEditingController(text: 'output.mp4');
-    final runner = useState<FfmpegRunner?>(null);
-    useEffect(() {
-      final currentRunner = runner.value;
-      return () {
-        unawaited(currentRunner?.dispose() ?? Future<void>.value());
-      };
-    }, [runner.value]);
-
-    Future<void> selectFFmpeg() async {
-      final result = await FilePicker.pickFiles();
-      if (result != null && result.files.single.path != null) {
-        ffmpegPath.value = result.files.single.path;
-      }
-    }
-
-    Future<void> selectInputFile() async {
-      final result = await FilePicker.pickFiles();
-      if (result != null && result.files.single.path != null) {
-        inputFile.value = File(result.files.single.path!);
-      }
-    }
-
-    Future<void> selectOutputPath() async {
-      final result = await FilePicker.getDirectoryPath();
-      if (result != null) {
-        outputPath.value = result;
-      }
-    }
-
-    final enabled = useMemoized(
-      () =>
-          ffmpegPath.value != null &&
-          inputFile.value != null &&
-          outputPath.value != null &&
-          outputFileName.text.isNotEmpty,
-      [
-        ffmpegPath.value,
-        inputFile.value,
-        outputPath.value,
-        outputFileName.text,
-      ],
-    );
-
-    Future<void> startProcessing() async {
-      if (!enabled || runner.value != null) return;
-      var runner1 = runner.value;
-      runner1 = runner.value = FfmpegRunner(
-        FfmpegCommand.simple(
-          ffmpegPath: ffmpegPath.value,
-          inputs: [FfmpegInput.asset(inputFile.value!.path)],
-          args: [const CliArg(name: 'y')],
-          outputFilepath: '${outputPath.value!}/${outputFileName.text.trim()}',
-        ),
-      );
-      try {
-        await runner1.run();
-      } finally {
-        if (runner.value == runner1) {
-          runner.value = null;
-        }
-      }
-    }
-
-    Future<void> stopProcessing() async {
-      await runner.value?.stop();
-      runner.value = null;
-    }
-
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text(title),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            ElevatedButton(
-              onPressed: selectFFmpeg,
-              child: Text(ffmpegPath.value ?? 'Select FFmpeg'),
-            ),
-            ElevatedButton(
-              onPressed: selectInputFile,
-              child: Text(
-                inputFile.value?.path.split('/').last ?? 'Select Input File',
-              ),
-            ),
-            ElevatedButton(
-              onPressed: selectOutputPath,
-              child: Text(
-                outputPath.value?.split('/').last ?? 'Select Output Path',
-              ),
-            ),
-            TextField(
-              controller: outputFileName,
-              decoration: const InputDecoration(labelText: 'Output File Name'),
-            ),
-            ElevatedButton(
-              onPressed: enabled ? startProcessing : null,
-              child: const Text('Start Processing'),
-            ),
-            ElevatedButton(
-              onPressed: runner.value != null ? stopProcessing : null,
-              child: const Text('Stop Processing'),
-            ),
-            StreamBuilder(
-              initialData: runner.value?.latestProgress,
-              stream: runner.value?.progressStream,
-              builder: (context, snapshot) {
-                if (snapshot.hasData) {
-                  final progress = snapshot.data!;
-                  return Text(progress.toString());
-                } else {
-                  return const Text('No progress yet');
-                }
-              },
-            ),
-          ],
-        ),
+  Widget build(BuildContext context) {
+    return VirtualWindowFrame(
+      child: Column(
+        children: [
+          const Material(
+            type: MaterialType.transparency,
+            child: AppWindowTitleBar(),
+          ),
+          Expanded(child: child),
+        ],
       ),
     );
   }
