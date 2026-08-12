@@ -49,6 +49,7 @@ dependencies:
   hooks_riverpod: ^3.2.1
   json_annotation: ^4.11.0
   logger: ^2.6.2
+  path: ^1.9.1
   path_provider: ^2.1.5
   riverpod_annotation: ^4.0.2
   slang: ^4.12.1
