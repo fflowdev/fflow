@@ -12,10 +12,26 @@ RouteBase get $homeShellRoute => ShellRouteData.$route(
   navigatorKey: HomeShellRoute.$navigatorKey,
   factory: $HomeShellRouteExtension._fromState,
   routes: [
-    GoRouteData.$route(path: '/queue', factory: $QueueRoute._fromState),
-    GoRouteData.$route(path: '/presets', factory: $PresetsRoute._fromState),
-    GoRouteData.$route(path: '/debug', factory: $DebugRoute._fromState),
-    GoRouteData.$route(path: '/settings', factory: $SettingsRoute._fromState),
+    GoRouteData.$route(
+      path: '/queue',
+      hasOverriddenOnExit: false,
+      factory: $QueueRoute._fromState,
+    ),
+    GoRouteData.$route(
+      path: '/presets',
+      hasOverriddenOnExit: false,
+      factory: $PresetsRoute._fromState,
+    ),
+    GoRouteData.$route(
+      path: '/debug',
+      hasOverriddenOnExit: false,
+      factory: $DebugRoute._fromState,
+    ),
+    GoRouteData.$route(
+      path: '/settings',
+      hasOverriddenOnExit: false,
+      factory: $SettingsRoute._fromState,
+    ),
   ],
 );
 

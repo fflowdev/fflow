@@ -312,7 +312,7 @@ class FakeFfmpegProcessController implements FfmpegProcessController {
       FfmpegRunResult(
         exitCode: 0,
         status: FfmpegRunStatus.succeeded,
-        startedAt: DateTime(2026, 1, 1),
+        startedAt: DateTime(2026),
         endedAt: DateTime(2026, 1, 1, 0, 0, 1),
       ),
     );
@@ -341,7 +341,7 @@ class FakeFfmpegProcessController implements FfmpegProcessController {
           FfmpegStopResult.notRunning => FfmpegRunStatus.gracefullyStopped,
           FfmpegStopResult.failed => FfmpegRunStatus.failed,
         },
-        startedAt: DateTime(2026, 1, 1),
+        startedAt: DateTime(2026),
         endedAt: DateTime(2026, 1, 1, 0, 0, 1),
       ),
     );
@@ -358,7 +358,7 @@ class FakeFfmpegProcessController implements FfmpegProcessController {
           status: forceStop
               ? FfmpegRunStatus.killed
               : FfmpegRunStatus.gracefullyStopped,
-          startedAt: DateTime(2026, 1, 1),
+          startedAt: DateTime(2026),
           endedAt: DateTime(2026, 1, 1, 0, 0, 1),
         ),
       );

@@ -3,7 +3,7 @@ import 'dart:io';
 
 import 'package:fflow/core/models/json.dart';
 import 'package:fflow/core/settings/application/app_settings_provider.dart';
-import 'package:fflow/shared/settings/output/domain/output_preferences.dart';
+import 'package:fflow/features/settings/domain/output_preferences.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'output_preferences_provider.g.dart';

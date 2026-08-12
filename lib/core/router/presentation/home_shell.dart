@@ -4,7 +4,7 @@ import 'package:fflow/core/router/application/router.dart';
 import 'package:fflow/core/router/domain/home_shell_navigation_destination.dart';
 import 'package:fflow/core/theme/extentions/navigation_theme.dart';
 import 'package:fflow/core/theme/theme_extension.dart';
-import 'package:fflow/shared/constants.dart';
+import 'package:fflow/core/constants/app_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
@@ -47,7 +47,7 @@ class HomeShell extends StatelessWidget {
     ];
 
     Widget widget = Scaffold(
-      appBar: useCustomWindowTitleBar ? const _WindowTitleBar() : null,
+      appBar: kUseCustomWindowTitleBar ? const _WindowTitleBar() : null,
       body: Row(
         children: [
           const _Navigation(destinations: destinations),
@@ -56,7 +56,7 @@ class HomeShell extends StatelessWidget {
       ),
     );
 
-    if (useCustomWindowTitleBar) {
+    if (kUseCustomWindowTitleBar) {
       widget = VirtualWindowFrame(child: widget);
     }
 

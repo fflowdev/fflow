@@ -1,5 +1,5 @@
 import 'package:fflow/core/json/json_typedef.dart';
-import 'package:fflow/shared/settings/theme/domain/theme_settings.dart';
+import 'package:fflow/features/settings/domain/theme_settings.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'app_settings.freezed.dart';

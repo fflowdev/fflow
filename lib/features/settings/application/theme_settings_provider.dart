@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:fflow/core/models/json.dart';
 import 'package:fflow/core/settings/application/app_settings_provider.dart';
-import 'package:fflow/shared/settings/theme/domain/theme_settings.dart';
+import 'package:fflow/features/settings/domain/theme_settings.dart';
 import 'package:flutter/material.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 

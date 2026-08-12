@@ -78,11 +78,10 @@ class _AppNotificationBuilderState extends State<AppNotificationBuilder> {
 
 class AppNotification extends InheritedWidget {
   const AppNotification._({
-    required AppNotificationConfig config,
-    required AppNotificationManager manager,
+    required this._config,
+    required this._manager,
     required super.child,
-  }) : _config = config,
-       _manager = manager;
+  });
 
   final AppNotificationConfig _config;
   final AppNotificationManager _manager;

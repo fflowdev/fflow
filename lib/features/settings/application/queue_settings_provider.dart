@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:fflow/core/json/json_typedef.dart';
 import 'package:fflow/core/settings/application/app_settings_provider.dart';
-import 'package:fflow/shared/settings/queue/domain/queue_settings.dart';
+import 'package:fflow/features/settings/domain/queue_settings.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'queue_settings_provider.g.dart';

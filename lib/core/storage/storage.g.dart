@@ -791,6 +791,9 @@ class $AppSettingsTableTable extends AppSettingsTable
   $AppSettingsTableTable createAlias(String alias) {
     return $AppSettingsTableTable(attachedDatabase, alias);
   }
+
+  @override
+  bool get isStrict => true;
 }
 
 class AppSettingsData extends DataClass implements Insertable<AppSettingsData> {

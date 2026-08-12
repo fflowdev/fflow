@@ -4,7 +4,7 @@ import 'package:fflow/core/ffmpeg/ffmpeg_process_controller.dart';
 import 'package:fflow/core/ffmpeg/ffmpeg_queue_manager.dart';
 import 'package:fflow/core/ffmpeg/ffmpeg_runner.dart';
 import 'package:fflow/core/ffmpeg/ffmpeg_task.dart';
-import 'package:fflow/shared/settings/queue/application/queue_settings_provider.dart';
+import 'package:fflow/features/settings/application/queue_settings_provider.dart';
 import 'package:ffmpeg_cli/ffmpeg_cli.dart' hide Stream;
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';

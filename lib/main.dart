@@ -1,10 +1,10 @@
 import 'dart:async';
 
 import 'package:fflow/app.dart';
+import 'package:fflow/core/constants/app_constants.dart';
 import 'package:fflow/core/provider/root_provider_container.dart';
 import 'package:fflow/core/settings/application/app_settings_provider.dart';
 import 'package:fflow/core/utils/logger.dart';
-import 'package:fflow/shared/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:window_manager/window_manager.dart';
@@ -48,7 +48,7 @@ Future<void> _initializeWindow() async {
     size: const Size(1080, 667),
     backgroundColor: Colors.transparent,
     skipTaskbar: false,
-    titleBarStyle: useCustomWindowTitleBar
+    titleBarStyle: kUseCustomWindowTitleBar
         ? TitleBarStyle.hidden
         : TitleBarStyle.normal,
   );

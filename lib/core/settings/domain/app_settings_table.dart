@@ -7,4 +7,7 @@ class AppSettingsTable extends Table {
 
   @override
   Set<Column<Object>>? get primaryKey => {key};
+
+  @override
+  bool get isStrict => true;
 }
