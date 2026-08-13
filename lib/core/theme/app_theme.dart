@@ -24,6 +24,13 @@ class AppTheme {
           borderRadius: BorderRadius.all(Radius.circular(8)),
         ),
       ),
+      dropdownMenuTheme: const DropdownMenuThemeData(
+        inputDecorationTheme: InputDecorationTheme(
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.all(Radius.circular(8)),
+          ),
+        ),
+      ),
       extensions: [
         AppThemeData(
           surface: Color.lerp(

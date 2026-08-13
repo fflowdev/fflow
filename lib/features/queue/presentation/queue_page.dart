@@ -6,7 +6,7 @@ import 'package:fflow/core/ffmpeg/ffmpeg_task.dart';
 import 'package:fflow/core/router/presentation/shell_route_scaffold.dart';
 import 'package:fflow/core/theme/theme_extension.dart';
 import 'package:fflow/features/queue/application/ffmpeg_queue_controller.dart';
-import 'package:fflow/features/queue/presentation/widgets/create_queue_task_dialog.dart';
+import 'package:fflow/features/queue/domain/create_queue_task_use_case.dart';
 import 'package:ffmpeg_cli/ffmpeg_cli.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
@@ -35,7 +35,11 @@ class QueuePage extends ConsumerWidget {
         const Gap(12),
         FilledButton.icon(
           onPressed: () async {
-            await const CreateQueueTaskDialog().show(context);
+            await CreateQueueTaskUseCase(
+              queueController: ref.read(
+                ffmpegQueueControllerProvider.notifier,
+              ),
+            ).execute(context: context);
           },
           icon: const Icon(Icons.add),
           label: const Text('New Task'),
@@ -582,11 +586,11 @@ class _DetailChip extends StatelessWidget {
   }
 }
 
-class _EmptyQueueState extends StatelessWidget {
+class _EmptyQueueState extends ConsumerWidget {
   const _EmptyQueueState();
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return LayoutBuilder(
       builder: (context, constraints) {
         return SingleChildScrollView(
@@ -633,7 +637,11 @@ class _EmptyQueueState extends StatelessWidget {
                         ),
                         FilledButton.icon(
                           onPressed: () async {
-                            await const CreateQueueTaskDialog().show(context);
+                            await CreateQueueTaskUseCase(
+                              queueController: ref.read(
+                                ffmpegQueueControllerProvider.notifier,
+                              ),
+                            ).execute(context: context);
                           },
                           icon: const Icon(Icons.add),
                           label: const Text('Create Task'),

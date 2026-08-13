@@ -3,21 +3,62 @@ import 'dart:io';
 import 'package:fflow/core/ffmpeg/ffmpeg_cli_argument_parser.dart';
 import 'package:fflow/core/widgets/dialog_form_fields.dart';
 import 'package:fflow/core/widgets/scrollable_dialog.dart';
-import 'package:fflow/features/queue/application/ffmpeg_queue_controller.dart';
+import 'package:fflow/features/presets/application/presets_query_provider.dart';
+import 'package:fflow/features/presets/domain/preset.dart';
+import 'package:fflow/features/presets/domain/presets_query_arguments.dart';
 import 'package:fflow/features/settings/application/ffmpeg_settings_provider.dart';
 import 'package:fflow/features/settings/application/output_preferences_provider.dart';
-import 'package:ffmpeg_cli/ffmpeg_cli.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:path/path.dart';
 
+class CreateQueueTaskFormData {
+  const CreateQueueTaskFormData({
+    required this.label,
+    required this.ffmpegPath,
+    required this.preset,
+    required this.additionalArgs,
+    required this.overwriteOutput,
+    required this.inputPath,
+    required this.outputDirectory,
+    required this.outputFileName,
+  });
+
+  final String label;
+  final String ffmpegPath;
+  final Preset? preset;
+  final String additionalArgs;
+  final bool overwriteOutput;
+  final String inputPath;
+  final String outputDirectory;
+  final String outputFileName;
+}
+
+sealed class _PresetsDropdownValue {
+  const _PresetsDropdownValue();
+}
+
+class _PresetDropdownValue extends _PresetsDropdownValue {
+  const _PresetDropdownValue(this.preset);
+
+  final Preset preset;
+}
+
+class _NoPresetDropdownValue extends _PresetsDropdownValue {
+  const _NoPresetDropdownValue();
+}
+
 class CreateQueueTaskDialog extends HookConsumerWidget {
   const CreateQueueTaskDialog({super.key});
 
-  Future<void> show(BuildContext context) {
-    return showDialog<void>(context: context, builder: (_) => this);
+  Future<CreateQueueTaskFormData?> show(BuildContext context) {
+    return showDialog<CreateQueueTaskFormData>(
+      context: context,
+      builder: (_) => this,
+      barrierDismissible: false,
+    );
   }
 
   @override
@@ -27,6 +68,7 @@ class CreateQueueTaskDialog extends HookConsumerWidget {
     final ffmpegPathController = useTextEditingController(
       text: ref.read(ffmpegSettingsProvider).ffmpegExecutablePath,
     );
+    final presetRef = useRef<Preset?>(null);
     final inputPathController = useTextEditingController();
     final outputDirectoryController = useTextEditingController(
       text: ref.read(outputPreferencesProvider).outputDirectoryPath,
@@ -36,7 +78,6 @@ class CreateQueueTaskDialog extends HookConsumerWidget {
     );
     final extraArgsController = useTextEditingController();
     final overwriteOutput = useState(true);
-    final isSubmitting = useState(false);
 
     Future<void> pickFfmpegExecutable() async {
       final result = await FilePicker.pickFiles(
@@ -72,40 +113,33 @@ class CreateQueueTaskDialog extends HookConsumerWidget {
       }
     }
 
-    Future<void> submit() async {
+    void onPresetSelected(_PresetsDropdownValue? value) {
+      if (value is _PresetDropdownValue) {
+        presetRef.value = value.preset;
+      } else {
+        presetRef.value = null;
+      }
+    }
+
+    void submit() {
       final valid = formKey.currentState?.validate() ?? false;
-      if (!valid || isSubmitting.value) {
+      if (!valid) {
         return;
       }
 
-      isSubmitting.value = true;
       try {
-        final args = const FfmpegCliArgumentParser()
-            .parse(extraArgsController.text)
-            .toList(growable: true);
-        if (overwriteOutput.value && args.every((arg) => arg.name != 'y')) {
-          args.insert(0, const CliArg(name: 'y'));
-        }
-
-        final outputFilepath = join(
-          outputDirectoryController.text.trim(),
-          outputFileNameController.text.trim(),
+        final formData = CreateQueueTaskFormData(
+          label: labelController.text.trim(),
+          ffmpegPath: ffmpegPathController.text.trim(),
+          preset: presetRef.value,
+          inputPath: inputPathController.text.trim(),
+          outputDirectory: outputDirectoryController.text.trim(),
+          outputFileName: outputFileNameController.text.trim(),
+          additionalArgs: extraArgsController.text.trim(),
+          overwriteOutput: overwriteOutput.value,
         );
 
-        ref
-            .read(ffmpegQueueControllerProvider.notifier)
-            .enqueueSimpleTask(
-              ffmpegPath: ffmpegPathController.text,
-              inputPath: inputPathController.text.trim(),
-              outputFilepath: outputFilepath,
-              label: labelController.text,
-              args: args,
-            );
-
-        if (!context.mounted) {
-          return;
-        }
-        Navigator.of(context).pop();
+        Navigator.of(context).pop(formData);
       } on Exception catch (error) {
         if (!context.mounted) {
           return;
@@ -113,8 +147,6 @@ class CreateQueueTaskDialog extends HookConsumerWidget {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(error.toString())),
         );
-      } finally {
-        isSubmitting.value = false;
       }
     }
 
@@ -146,13 +178,20 @@ class CreateQueueTaskDialog extends HookConsumerWidget {
                   TextFormField(
                     controller: ffmpegPathController,
                     decoration: InputDecoration(
-                      labelText: 'FFmpeg executable path (Optional)',
+                      labelText: 'FFmpeg executable path',
                       suffixIcon: IconButton(
                         icon: const Icon(Icons.folder_open),
                         onPressed: pickFfmpegExecutable,
                       ),
                     ),
+                    validator: (value) {
+                      if (value == null || value.trim().isEmpty) {
+                        return 'FFmpeg executable path is required.';
+                      }
+                      return null;
+                    },
                   ),
+                  _PresetsDropdownMenu(onSelected: onPresetSelected),
                   TextFormField(
                     controller: extraArgsController,
                     decoration: const InputDecoration(
@@ -248,19 +287,12 @@ class CreateQueueTaskDialog extends HookConsumerWidget {
       ),
       actions: [
         TextButton(
-          onPressed: isSubmitting.value
-              ? null
-              : () => Navigator.of(context).pop(),
+          onPressed: () => Navigator.of(context).pop(),
           child: const Text('Cancel'),
         ),
         FilledButton.icon(
-          onPressed: isSubmitting.value ? null : submit,
-          icon: isSubmitting.value
-              ? const SizedBox.square(
-                  dimension: 16,
-                  child: CircularProgressIndicator(strokeWidth: 2),
-                )
-              : const Icon(Icons.queue),
+          onPressed: submit,
+          icon: const Icon(Icons.queue),
           label: const Text('Enqueue'),
         ),
       ],
@@ -291,6 +323,62 @@ class _Fields extends HookWidget {
           children: children,
         ),
       ),
+    );
+  }
+}
+
+class _PresetsDropdownMenu extends ConsumerWidget {
+  const _PresetsDropdownMenu({required this.onSelected});
+
+  final void Function(_PresetsDropdownValue? value) onSelected;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final presets = ref.watch(
+      presetsQueryProvider(const PresetsQueryArguments()),
+    );
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        return DropdownMenu<_PresetsDropdownValue?>(
+          width: constraints.maxWidth,
+          initialSelection: const _NoPresetDropdownValue(),
+          label: const Text('Preset (Optional)'),
+          onSelected: onSelected,
+          dropdownMenuEntries: switch (presets) {
+            AsyncLoading() => const [
+              DropdownMenuEntry(
+                label: 'Loading presets...',
+                value: null,
+                enabled: false,
+              ),
+            ],
+            AsyncError(:final error) => [
+              DropdownMenuEntry(
+                label: 'Error loading presets: $error',
+                value: null,
+                enabled: false,
+              ),
+            ],
+            AsyncData(:final value) =>
+              value.isEmpty
+                  ? [
+                      const DropdownMenuEntry(
+                        label: 'No presets available',
+                        value: null,
+                        enabled: false,
+                      ),
+                    ]
+                  : value
+                        .map(
+                          (preset) => DropdownMenuEntry(
+                            label: preset.name,
+                            value: _PresetDropdownValue(preset),
+                          ),
+                        )
+                        .toList(),
+          },
+        );
+      },
     );
   }
 }
